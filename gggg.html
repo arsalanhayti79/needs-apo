@@ -1,0 +1,3563 @@
+<!DOCTYPE html>  
+<html lang="fa" dir="rtl">  
+  <head>    
+    <meta charset="UTF-8" />    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />    
+    <title>نیازها — مدیریت و ارسال</title>  
+    <link rel="manifest" id="manifest-link">  
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">  
+    <style>    
+      :root{    
+        --bg: linear-gradient(135deg,#f0f4f8 0%,#d9e2ec 100%);    
+        --card-bg: rgba(255,255,255,0.95);    
+        --accent1:#4f46e5;    
+        --accent2:#6366f1;    
+        --success:#22c55e;    
+        --danger:#ef4444;    
+        --warning:#f59e0b;    
+        --info:#3b82f6;    
+        --muted: rgba(0,0,0,0.45);    
+        --dark-bg:#0f1724;    
+        --dark-card: rgba(17,24,39,0.9);    
+        --dark-text:#e6eef8;    
+        --glass: rgba(255,255,255,0.7);    
+      }    
+      *{box-sizing:border-box}    
+      html,body{
+        height:100%; 
+        overflow-x: hidden;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }    
+      body{    
+        margin:0;    
+        font-family:"Vazirmatn",sans-serif;    
+        background:var(--bg);    
+        color:#0b1220;    
+        -webkit-font-smoothing:antialiased;    
+        -moz-osx-font-smoothing:grayscale;    
+        transition:background .28s,color .28s;    
+        padding:20px;    
+        width: 100%;
+        min-height: 100vh;
+      }    
+      body.dark{ background: var(--dark-bg); color:var(--dark-text); }    
+      .container{ 
+        max-width:1100px; 
+        margin:0 auto; 
+        width: 100%;
+        min-height: 100vh;
+      }
+
+      /* daily message - مینیمال و ساده */
+      .daily-message {
+        background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(99, 102, 241, 0.08));
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(79, 70, 229, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: fadeInDown 0.5s ease;
+        transition: all 0.4s ease;
+        position: relative;
+        width: 100%;
+      }
+      body.dark .daily-message {
+        background: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(99, 102, 241, 0.12));
+        border-color: rgba(99, 102, 241, 0.25);
+      }
+      .daily-message.hiding {
+        opacity: 0;
+        transform: translateY(-10px);
+        margin-bottom: 0;
+        padding: 0;
+        height: 0;
+        overflow: hidden;
+        border: none;
+      }
+      .daily-icon {
+        font-size: 32px;
+        animation: gentleFloat 4s ease-in-out infinite;
+        flex-shrink: 0;
+      }
+      .daily-text {
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--accent1);
+        font-weight: 500;
+        flex: 1;
+        text-align: right;
+      }
+      body.dark .daily-text {
+        color: #a5b4fc;
+      }
+      .daily-close {
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 6px;
+        transition: all 0.2s;
+        flex-shrink: 0;
+        font-size: 18px;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .daily-close:hover {
+        background: rgba(0,0,0,0.05);
+        color: var(--accent1);
+      }
+      body.dark .daily-close:hover {
+        background: rgba(255,255,255,0.08);
+      }
+
+      /* header */
+      .header{
+        display:flex; gap:10px; align-items:center;
+        background:var(--card-bg);
+        padding:12px; border-radius:14px;
+        box-shadow:0 6px 18px rgba(15,23,42,0.04);
+        backdrop-filter: blur(6px);
+        animation: slideInRight 0.6s ease;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+      body.dark .header{ background:var(--dark-card) }
+
+      #searchBox{
+        flex:1; 
+        min-width: 200px;
+        padding:10px 12px; 
+        border-radius:10px; 
+        font-size:15px;
+        border:1px solid rgba(0,0,0,0.06); 
+        background:var(--glass); 
+        color:inherit;
+      }
+      body.dark #searchBox{ border-color: rgba(255,255,255,0.06) }
+      #searchBox::placeholder{ color:var(--muted) }
+
+      .header-actions{ 
+        display:flex; 
+        gap:8px; 
+        align-items:center;
+        flex-wrap: wrap;
+      }
+      .icon-btn{
+        border:none; background:transparent; cursor:pointer; font-size:18px;
+        padding:8px; border-radius:8px;
+        transition: all 0.2s;
+        flex-shrink: 0;
+      }
+      .icon-btn:hover{ 
+        background:rgba(0,0,0,0.04);
+        transform: translateY(-2px);
+      }
+      body.dark .icon-btn:hover{ background:rgba(255,255,255,0.08) }
+
+      /* quick alarm button */
+      .quick-alarm-btn {
+        background: linear-gradient(135deg, var(--warning), #f97316);
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        animation: pulse 2s infinite;
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+      .quick-alarm-btn.active {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        animation: pulse 0.5s infinite;
+      }
+      .quick-alarm-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+      }
+      .quick-alarm-btn.active:hover {
+        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+      }
+
+      /* grid */
+      .grid{ 
+        display:grid; 
+        grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); 
+        gap:14px; 
+        margin-top:14px;
+        animation: fadeInUp 0.8s ease;
+        width: 100%;
+      }
+
+      /* card - مینیمال‌تر و خوشگل‌تر */
+      .card{
+        background:var(--card-bg); 
+        border-radius:16px; 
+        padding:0;
+        border:1px solid rgba(0,0,0,0.04); 
+        transition:transform .22s,box-shadow .22s;
+        animation: fadeIn 0.5s ease;
+        width: 100%;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(11,19,40,0.02);
+      }
+      .card:hover{ 
+        transform:translateY(-4px); 
+        box-shadow:0 12px 30px rgba(11,19,40,0.08);
+        border-color: rgba(79, 70, 229, 0.1);
+      }
+      body.dark .card{ 
+        background:var(--dark-card); 
+        border-color: rgba(255,255,255,0.06);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      }
+      body.dark .card:hover {
+        border-color: rgba(99, 102, 241, 0.2);
+      }
+
+      .card-header{ 
+        display:flex; 
+        align-items:center; 
+        gap:12px; 
+        cursor:pointer; 
+        width: 100%;
+        padding:16px;
+        border-bottom: 1px solid rgba(0,0,0,0.03);
+        transition: all 0.3s;
+      }
+      body.dark .card-header {
+        border-bottom-color: rgba(255,255,255,0.03);
+      }
+      .card-title{ 
+        font-weight:700; 
+        font-size:15px; 
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+        white-space: nowrap; 
+        color: var(--accent1);
+      }
+      body.dark .card-title {
+        color: #a5b4fc;
+      }
+      .card-meta{ 
+        margin-right:auto; 
+        display:flex; 
+        gap:8px; 
+        align-items:center; 
+        min-width: 0; 
+        flex: 1; 
+      }
+
+      .chev{ 
+        transition:transform .28s; 
+        flex-shrink: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      /* آیکون‌های مینیمال و خوشگل */
+      .icon{ 
+        width:42px; height:42px; border-radius:12px; 
+        display:grid; place-items:center; font-size:20px; 
+        background:linear-gradient(135deg,var(--accent1),var(--accent2)); 
+        color:#fff; flex:0 0 42px; 
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        transition: all 0.3s;
+      }
+      .card:hover .icon {
+        transform: scale(1.05);
+        box-shadow: 0 6px 18px rgba(79, 70, 229, 0.3);
+      }
+
+      /* items */
+      .items{ 
+        overflow:hidden; 
+        max-height:0; 
+        transition:max-height .35s ease; 
+        padding-top:0; 
+        width: 100%;
+        background: rgba(0,0,0,0.01);
+      }
+      body.dark .items {
+        background: rgba(255,255,255,0.01);
+      }
+      .items.open{ 
+        padding:0; 
+        max-height:2000px; 
+      }
+
+      .item{ 
+        display:flex; 
+        align-items:center; 
+        gap:12px; 
+        padding:12px 16px; 
+        border-radius:0; 
+        background: transparent; 
+        cursor:pointer; 
+        width: 100%;
+        transition: all 0.2s;
+        border-bottom: 1px solid rgba(0,0,0,0.02);
+      }
+      body.dark .item {
+        border-bottom-color: rgba(255,255,255,0.02);
+      }
+      .item:last-child {
+        border-bottom: none;
+      }
+      .item:hover {
+        background: linear-gradient(90deg, rgba(79, 70, 229, 0.04), rgba(99, 102, 241, 0.04));
+      }
+      body.dark .item:hover {
+        background: linear-gradient(90deg, rgba(79, 70, 229, 0.08), rgba(99, 102, 241, 0.08));
+      }
+      .checkbox{ 
+        width:24px; height:24px; border-radius:8px; border:2px solid rgba(0,0,0,0.12); 
+        display:grid; place-items:center; cursor:pointer; flex:0 0 24px; 
+        transition:all .18s; background:transparent;
+        position: relative;
+      }
+      .checkbox::before {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        background: linear-gradient(135deg,var(--success),#10b981);
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .checkbox svg{ 
+        opacity:0; 
+        transform:scale(0.6); 
+        transition:all .18s;
+        z-index: 1;
+        position: relative;
+      }
+      .item.checked .checkbox{ 
+        border-color:transparent; 
+        box-shadow:0 4px 12px rgba(34,197,94,0.15) 
+      }
+      .item.checked .checkbox::before {
+        opacity: 1;
+      }
+      .item.checked .checkbox svg{ 
+        opacity:1; 
+        transform:scale(1) 
+      }
+
+      .item-label{ 
+        flex:1; 
+        font-size:14px; 
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+        white-space: nowrap; 
+        color: inherit;
+        transition: color 0.2s;
+      }
+      .item.checked .item-label {
+        color: var(--success);
+        font-weight: 500;
+      }
+      body.dark .item.checked .item-label {
+        color: #4ade80;
+      }
+
+      /* submit */
+      .controls{ 
+        display:flex; 
+        gap:12px; 
+        margin-top:18px; 
+        flex-wrap:wrap;
+        animation: fadeInUp 1s ease;
+        width: 100%;
+      }
+      .btn{ 
+        padding:12px 16px; 
+        border-radius:12px; 
+        border:none; 
+        cursor:pointer; 
+        font-weight:700;
+        transition: all 0.3s;
+        flex: 1;
+        min-width: 120px;
+      }
+      .btn-primary{ 
+        background: linear-gradient(135deg,var(--accent1),var(--accent2)); 
+        color:#fff;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+      }
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+      }
+      .btn-ghost{ 
+        background:transparent; 
+        border:1px solid rgba(0,0,0,0.06);
+        color: inherit;
+      }
+      .btn-ghost:hover {
+        background: rgba(0,0,0,0.03);
+        transform: translateY(-2px);
+      }
+      body.dark .btn-ghost {
+        border-color: rgba(255,255,255,0.1);
+      }
+      body.dark .btn-ghost:hover {
+        background: rgba(255,255,255,0.05);
+      }
+      .clear-btn{ 
+        background: linear-gradient(135deg, var(--danger), #ef4444);
+        color:#fff;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+      }
+      .clear-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+      }
+
+      /* دکمه‌های مینیمال و ساده */
+      .simple-btn {
+        padding: 10px 20px;
+        border-radius: 10px;
+        border: 1px solid rgba(0,0,0,0.1);
+        background: rgba(255,255,255,0.8);
+        color: #333;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 14px;
+        transition: all 0.2s;
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      body.dark .simple-btn {
+        background: rgba(30,30,30,0.8);
+        border-color: rgba(255,255,255,0.1);
+        color: #eee;
+      }
+      .simple-btn:hover {
+        background: rgba(0,0,0,0.05);
+        border-color: var(--accent1);
+      }
+      body.dark .simple-btn:hover {
+        background: rgba(255,255,255,0.1);
+      }
+
+      /* دکمه بستن مودال - مینیمال */
+      .modal-close-btn {
+        padding: 10px 20px;
+        border-radius: 10px;
+        border: 1px solid rgba(0,0,0,0.1);
+        background: rgba(255,255,255,0.8);
+        color: #333;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 14px;
+        transition: all 0.2s;
+        text-align: center;
+        width: 100%;
+        margin-top: 10px;
+        box-sizing: border-box;
+      }
+      body.dark .modal-close-btn {
+        background: rgba(30,30,30,0.8);
+        border-color: rgba(255,255,255,0.1);
+        color: #eee;
+      }
+      .modal-close-btn:hover {
+        background: rgba(0,0,0,0.05);
+        border-color: var(--muted);
+      }
+      body.dark .modal-close-btn:hover {
+        background: rgba(255,255,255,0.1);
+      }
+
+      /* textarea */
+      textarea{ 
+        width:100%; 
+        padding:12px; 
+        border-radius:12px; 
+        border:1px solid rgba(0,0,0,0.08); 
+        resize:vertical; 
+        min-height:84px; 
+        margin-top:14px; 
+        font-family:inherit; 
+        background:transparent; 
+        color:inherit;
+        transition: all 0.3s;
+        box-sizing: border-box;
+      }
+      textarea:focus {
+        outline: none;
+        border-color: var(--accent1);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      }
+      body.dark textarea{ border-color: rgba(255,255,255,0.06) }
+
+      /* emergency contacts - مینیمال و جمع‌وجور */
+      .emergency-contacts{ 
+        display: flex; 
+        flex-wrap: wrap; 
+        gap: 8px; 
+        margin-top: 18px; 
+        padding: 12px; 
+        background: rgba(254, 249, 195, 0.15); 
+        border-radius: 12px; 
+        animation: fadeInUp 0.9s ease;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      body.dark .emergency-contacts{ background: rgba(55, 65, 81, 0.15) }
+      .emergency-contact{ 
+        display: flex; 
+        align-items: center; 
+        gap: 8px; 
+        padding: 8px 12px; 
+        background: white; 
+        border-radius: 10px; 
+        box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        cursor: pointer;
+        transition: all 0.2s;
+        flex: 1;
+        min-width: 160px;
+        max-width: calc(50% - 8px);
+      }
+      body.dark .emergency-contact{ background: var(--dark-card) }
+      .emergency-contact:hover{ transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1) }
+      .emergency-contact .call-btn{ 
+        background: linear-gradient(135deg, #22c55e, #10b981); 
+        color: white; 
+        border: none; 
+        padding: 6px 12px; 
+        border-radius: 8px; 
+        cursor: pointer; 
+        font-weight: 600; 
+        display: flex; 
+        align-items: center; 
+        gap: 6px; 
+        flex-shrink: 0;
+        white-space: nowrap;
+        font-size: 12px;
+      }
+      .emergency-contact .name{ font-weight: 600; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .emergency-contact .number{ color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+      /* modal */
+      .modal{ 
+        position:fixed; 
+        inset:0; 
+        display:none; 
+        align-items:center; 
+        justify-content:center; 
+        background:rgba(0,0,0,0.45); 
+        z-index:1000; 
+        padding:18px; 
+        overflow:auto;
+        animation: fadeIn 0.3s ease;
+      }
+      .modal[aria-hidden="false"]{ 
+        display:flex;
+      }
+      .modal-card{ 
+        background:var(--card-bg); 
+        color:inherit; 
+        padding:24px; 
+        border-radius:16px; 
+        width:100%; 
+        max-width:500px; 
+        box-shadow:0 20px 60px rgba(2,6,23,0.4);
+        animation: slideUp 0.4s ease;
+        box-sizing: border-box;
+        margin: auto;
+      }
+      .modal-card h3{ 
+        margin:0 0 12px 0;
+        font-size: 18px;
+        color: var(--accent1);
+        word-wrap: break-word;
+      }
+
+      /* پیش‌نمایش زیبا - متفاوت از پنجره پرینت */
+      .preview-container {
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 16px;
+        background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.9));
+        border-radius: 16px;
+        border: 1px solid rgba(0,0,0,0.05);
+        margin: 16px 0;
+        box-sizing: border-box;
+        width: 100%;
+      }
+      body.dark .preview-container {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+        border-color: rgba(255,255,255,0.05);
+      }
+      .preview-empty {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--muted);
+        width: 100%;
+      }
+      .preview-empty-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+      .preview-category {
+        margin-bottom: 20px;
+        padding: 20px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        border-right: 5px solid var(--accent1);
+        animation: fadeInRight 0.5s ease;
+        width: 100%;
+        box-sizing: border-box;
+        transition: all 0.3s;
+      }
+      body.dark .preview-category {
+        background: var(--dark-card);
+        border-right-color: var(--accent2);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      }
+      .preview-category:hover {
+        transform: translateX(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+      }
+      .preview-category-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        font-size: 16px;
+        color: var(--accent1);
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid rgba(0,0,0,0.05);
+        width: 100%;
+      }
+      body.dark .preview-category-title {
+        border-bottom-color: rgba(255,255,255,0.05);
+      }
+      .preview-category-title .icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        font-size: 20px;
+        background: linear-gradient(135deg, var(--accent1), var(--accent2));
+        color: white;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+      }
+      .preview-items {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+      }
+      .preview-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: linear-gradient(135deg, rgba(79, 70, 229, 0.07), rgba(99, 102, 241, 0.07));
+        border-radius: 10px;
+        transition: all 0.2s;
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid rgba(79, 70, 229, 0.1);
+      }
+      body.dark .preview-item {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(79, 70, 229, 0.1));
+        border-color: rgba(99, 102, 241, 0.2);
+      }
+      .preview-item:hover {
+        background: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(99, 102, 241, 0.12));
+        transform: translateX(-4px);
+      }
+      .preview-item .checkmark {
+        color: var(--success);
+        font-size: 20px;
+        animation: pop 0.3s ease;
+        flex-shrink: 0;
+      }
+      .preview-notes {
+        background: linear-gradient(135deg, rgba(254, 249, 195, 0.25), rgba(254, 243, 199, 0.25));
+        padding: 20px;
+        border-radius: 14px;
+        margin-top: 16px;
+        border-right: 5px solid var(--warning);
+        animation: fadeInLeft 0.5s ease;
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid rgba(245, 158, 11, 0.2);
+      }
+      body.dark .preview-notes {
+        background: linear-gradient(135deg, rgba(146, 64, 14, 0.2), rgba(124, 45, 18, 0.2));
+        border-right-color: var(--warning);
+        border-color: rgba(245, 158, 11, 0.3);
+      }
+      .preview-notes-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        color: var(--warning);
+        margin-bottom: 12px;
+        width: 100%;
+      }
+
+      /* مودال تایید پاک کردن */
+      .confirm-modal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.45);
+        z-index: 2000;
+        padding: 18px;
+        animation: fadeIn 0.3s ease;
+      }
+      .confirm-modal.active {
+        display: flex;
+      }
+      .confirm-card {
+        background: var(--card-bg);
+        color: inherit;
+        padding: 24px;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 20px 60px rgba(2,6,23,0.4);
+        animation: slideUp 0.4s ease;
+        box-sizing: border-box;
+        text-align: center;
+        border: 1px solid rgba(79, 70, 229, 0.1);
+      }
+      body.dark .confirm-card {
+        background: var(--dark-card);
+        border-color: rgba(99, 102, 241, 0.2);
+      }
+      .confirm-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+        animation: gentleFloat 3s ease-in-out infinite;
+      }
+      .confirm-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: var(--accent1);
+      }
+      body.dark .confirm-title {
+        color: #a5b4fc;
+      }
+      .confirm-message {
+        font-size: 14px;
+        color: var(--muted);
+        margin-bottom: 24px;
+        line-height: 1.5;
+      }
+      .confirm-buttons {
+        display: flex;
+        gap: 12px;
+        width: 100%;
+      }
+      .confirm-btn {
+        flex: 1;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+        font-size: 14px;
+      }
+      .confirm-btn.cancel {
+        background: rgba(0,0,0,0.04);
+        color: inherit;
+        border: 1px solid rgba(0,0,0,0.08);
+      }
+      body.dark .confirm-btn.cancel {
+        background: rgba(255,255,255,0.05);
+        border-color: rgba(255,255,255,0.1);
+      }
+      .confirm-btn.cancel:hover {
+        background: rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+      }
+      .confirm-btn.confirm {
+        background: linear-gradient(135deg, var(--danger), #ef4444);
+        color: white;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+      }
+      .confirm-btn.confirm:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+      }
+
+      /* مودال حذف همه داده‌ها */
+      .delete-all-modal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.5);
+        z-index: 2500;
+        padding: 18px;
+        animation: fadeIn 0.3s ease;
+      }
+      .delete-all-modal.active {
+        display: flex;
+      }
+      .delete-all-card {
+        background: var(--card-bg);
+        color: inherit;
+        padding: 28px;
+        border-radius: 18px;
+        width: 100%;
+        max-width: 420px;
+        box-shadow: 0 25px 70px rgba(220, 38, 38, 0.2);
+        animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-sizing: border-box;
+        text-align: center;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+      }
+      body.dark .delete-all-card {
+        background: var(--dark-card);
+        border-color: rgba(239, 68, 68, 0.3);
+        box-shadow: 0 25px 70px rgba(220, 38, 38, 0.3);
+      }
+      .delete-all-icon {
+        font-size: 56px;
+        margin-bottom: 20px;
+        animation: pulse 1.5s infinite;
+        color: var(--danger);
+      }
+      .delete-all-title {
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 12px;
+        color: var(--danger);
+        line-height: 1.4;
+      }
+      .delete-all-message {
+        font-size: 15px;
+        color: var(--muted);
+        margin-bottom: 28px;
+        line-height: 1.6;
+        padding: 0 10px;
+      }
+      .delete-all-warning {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(220, 38, 38, 0.08));
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        border-right: 4px solid var(--danger);
+        text-align: right;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--danger);
+      }
+      body.dark .delete-all-warning {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(220, 38, 38, 0.12));
+        border-right-color: var(--danger);
+      }
+      .delete-all-buttons {
+        display: flex;
+        gap: 14px;
+        width: 100%;
+      }
+      .delete-all-btn {
+        flex: 1;
+        padding: 14px 18px;
+        border-radius: 14px;
+        border: none;
+        cursor: pointer;
+        font-weight: 700;
+        transition: all 0.3s;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .delete-all-btn.cancel {
+        background: rgba(0,0,0,0.05);
+        color: inherit;
+        border: 1px solid rgba(0,0,0,0.1);
+      }
+      body.dark .delete-all-btn.cancel {
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,255,255,0.15);
+      }
+      .delete-all-btn.cancel:hover {
+        background: rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+      }
+      body.dark .delete-all-btn.cancel:hover {
+        background: rgba(255,255,255,0.12);
+      }
+      .delete-all-btn.confirm {
+        background: linear-gradient(135deg, var(--danger), #dc2626);
+        color: white;
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+      }
+      .delete-all-btn.confirm:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+      }
+
+      /* ارسال مودال زیبا */
+      .send-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin: 20px 0;
+        width: 100%;
+      }
+      .send-option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 20px;
+        background: rgba(79, 70, 229, 0.05);
+        border-radius: 14px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+        animation: fadeIn 0.5s ease;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .send-option:hover {
+        transform: translateY(-6px);
+        border-color: var(--accent1);
+        box-shadow: 0 12px 30px rgba(79, 70, 229, 0.15);
+        background: rgba(79, 70, 229, 0.08);
+      }
+      .send-option .icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 24px;
+        margin-bottom: 12px;
+        animation: float 3s ease-in-out infinite;
+      }
+      .send-option.whatsapp .icon {
+        background: linear-gradient(135deg, #25D366, #128C7E);
+        color: white;
+      }
+      .send-option.sms .icon {
+        background: linear-gradient(135deg, #4f46e5, #6366f1);
+        color: white;
+      }
+      .send-option.copy .icon {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        color: white;
+      }
+      .send-option .title {
+        font-weight: 700;
+        font-size: 15px;
+        margin-bottom: 6px;
+      }
+      .send-option .desc {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+
+      /* تنظیمات تبی */
+      .settings-tabs{ 
+        display:flex; 
+        gap:4px; 
+        margin-bottom:20px; 
+        border-bottom:1px solid rgba(0,0,0,0.08); 
+        padding-bottom:4px; 
+        flex-wrap: wrap;
+        width: 100%;
+      }
+      .settings-tab{ 
+        padding:10px 18px; 
+        border:none; 
+        background:transparent; 
+        cursor:pointer; 
+        border-radius:10px; 
+        font-size:14px; 
+        transition: all 0.3s;
+        position: relative;
+        font-weight: 500;
+        flex: 1;
+        min-width: 100px;
+        text-align: center;
+      }
+      .settings-tab:hover {
+        background: rgba(0,0,0,0.03);
+      }
+      body.dark .settings-tab:hover {
+        background: rgba(255,255,255,0.05);
+      }
+      .settings-tab.active{ 
+        background: linear-gradient(135deg,var(--accent1),var(--accent2)); 
+        color:#fff; 
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+      }
+      .settings-tab.active::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 24px;
+        height: 3px;
+        background: linear-gradient(135deg,var(--accent1),var(--accent2));
+        border-radius: 2px;
+      }
+      .settings-tab-content{ display:none; width: 100%; }
+      .settings-tab-content.active{ 
+        display:block; 
+        animation: fadeIn 0.4s ease;
+      }
+
+      /* تنظیمات فرم */
+      .settings-section {
+        margin-bottom: 24px;
+        padding: 20px;
+        background: rgba(0,0,0,0.02);
+        border-radius: 14px;
+        border: 1px solid rgba(0,0,0,0.04);
+        animation: fadeInUp 0.5s ease;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      body.dark .settings-section {
+        background: rgba(255,255,255,0.02);
+        border-color: rgba(255,255,255,0.06);
+      }
+      .settings-section h4 {
+        margin: 0 0 16px 0;
+        font-size: 16px;
+        color: var(--accent1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+      }
+      .settings-group {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+      }
+      .setting-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      body.dark .setting-item {
+        border-bottom-color: rgba(255,255,255,0.05);
+      }
+      .setting-item:last-child {
+        border-bottom: none;
+      }
+      .setting-label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+        min-width: 200px;
+      }
+      .setting-title {
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .setting-desc {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      .setting-control {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+      }
+
+      /* سوئیچ زیبا */
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 52px;
+        height: 28px;
+        flex-shrink: 0;
+      }
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+      }
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+      }
+      input:checked + .slider {
+        background: linear-gradient(135deg,var(--accent1),var(--accent2));
+      }
+      input:checked + .slider:before {
+        transform: translateX(24px);
+      }
+
+      /* دسته‌های شخصی‌سازی */
+      .category-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 8px;
+        margin-bottom: 16px;
+        width: 100%;
+      }
+      .category-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: white;
+        border-radius: 12px;
+        border: 1px solid rgba(0,0,0,0.06);
+        transition: all 0.3s;
+        animation: slideInRight 0.5s ease;
+        width: 100%;
+        box-sizing: border-box;
+        flex-wrap: wrap;
+      }
+      body.dark .category-item {
+        background: var(--dark-card);
+        border-color: rgba(255,255,255,0.08);
+      }
+      .category-item:hover {
+        transform: translateX(-6px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      }
+      .category-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        font-size: 18px;
+        background: linear-gradient(135deg, var(--accent1), var(--accent2));
+        color: white;
+        flex: 0 0 40px;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+      }
+      .category-info {
+        flex: 1;
+        min-width: 150px;
+      }
+      .category-name {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .category-items {
+        font-size: 12px;
+        color: var(--muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .category-actions {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .action-btn {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .action-btn:hover {
+        transform: translateY(-2px);
+      }
+      .edit-btn {
+        background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(99, 102, 241, 0.1));
+        color: var(--accent1);
+      }
+      .delete-btn {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+        color: var(--danger);
+      }
+
+      /* فرم اضافه کردن شماره */
+      .emergency-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 20px;
+        background: rgba(0,0,0,0.02);
+        border-radius: 14px;
+        margin-top: 16px;
+        animation: fadeInUp 0.5s ease;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      body.dark .emergency-form {
+        background: rgba(255,255,255,0.02);
+      }
+      .form-row {
+        display: flex;
+        gap: 12px;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+      @media (max-width: 480px) {
+        .form-row {
+          flex-direction: column;
+        }
+      }
+      .form-input {
+        flex: 1;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(0,0,0,0.1);
+        font-family: inherit;
+        background: white;
+        color: inherit;
+        transition: all 0.3s;
+        min-width: 200px;
+        box-sizing: border-box;
+        width: 100%;
+      }
+      .form-input:focus {
+        outline: none;
+        border-color: var(--accent1);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      }
+      body.dark .form-input {
+        background: var(--dark-card);
+        border-color: rgba(255,255,255,0.1);
+      }
+      .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 12px;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      /* مودال ویرایش */
+      .edit-modal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.5);
+        z-index: 3000;
+        padding: 20px;
+        animation: fadeIn 0.3s ease;
+        box-sizing: border-box;
+      }
+      .edit-modal.active {
+        display: flex;
+      }
+      .edit-modal-content {
+        background: white;
+        border-radius: 20px;
+        padding: 28px;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-sizing: border-box;
+      }
+      body.dark .edit-modal-content {
+        background: var(--dark-card);
+        color: var(--dark-text);
+      }
+      .edit-modal-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--accent1);
+        text-align: center;
+        word-wrap: break-word;
+      }
+      .edit-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+      }
+      .form-label {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--accent1);
+      }
+      .form-input-large {
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(0,0,0,0.1);
+        font-family: inherit;
+        font-size: 14px;
+        background: white;
+        color: inherit;
+        transition: all 0.3s;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      body.dark .form-input-large {
+        background: var(--dark-card);
+        border-color: rgba(255,255,255,0.1);
+      }
+      .form-input-large:focus {
+        outline: none;
+        border-color: var(--accent1);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+      }
+      .edit-modal-buttons {
+        display: flex;
+        gap: 16px;
+        margin-top: 24px;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+      .edit-modal-btn {
+        flex: 1;
+        padding: 14px;
+        border-radius: 12px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        min-width: 120px;
+        box-sizing: border-box;
+      }
+      .edit-modal-btn.cancel {
+        background: rgba(0,0,0,0.04);
+        color: inherit;
+      }
+      body.dark .edit-modal-btn.cancel {
+        background: rgba(255,255,255,0.08);
+      }
+      .edit-modal-btn.cancel:hover {
+        background: rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+      }
+      .edit-modal-btn.save {
+        background: linear-gradient(135deg, var(--accent1), var(--accent2));
+        color: white;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+      }
+      .edit-modal-btn.save:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+      }
+
+      /* toast */
+      .toast-wrap{ 
+        position:fixed; 
+        left:16px; 
+        bottom:16px; 
+        display:flex; 
+        flex-direction:column; 
+        gap:8px; 
+        z-index:2000;
+        max-width: 300px;
+      }
+      .toast{ 
+        background: linear-gradient(135deg, #111827, #1f2937); 
+        color:#fff; 
+        padding:14px 16px; 
+        border-radius:12px; 
+        box-shadow:0 8px 24px rgba(2,6,23,0.4);
+        animation: slideInLeft 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        word-wrap: break-word;
+        max-width: 100%;
+      }
+      body.dark .toast{ background: linear-gradient(135deg, #0ea5a5, #0891b2) }
+
+      /* badge */
+      .badge{ 
+        background:rgba(0,0,0,0.06); 
+        padding:6px 10px; 
+        border-radius:999px; 
+        font-weight:700; 
+        font-size:12px;
+        animation: pop 0.3s ease;
+        flex-shrink: 0;
+        min-width: 24px;
+        text-align: center;
+      }
+      body.dark .badge {
+        background: rgba(255,255,255,0.1);
+        color: var(--dark-text);
+      }
+
+      /* انیمیشن‌ها */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-30px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes fadeInLeft {
+        from { opacity: 0; transform: translateX(30px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      @keyframes fadeInRight {
+        from { opacity: 0; transform: translateX(-30px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      @keyframes slideUp {
+        from { transform: translateY(50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      @keyframes slideInLeft {
+        from { transform: translateX(-100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+      }
+      @keyframes gentleFloat {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-5px); }
+      }
+      @keyframes pop {
+        0% { transform: scale(0.7); opacity: 0; }
+        70% { transform: scale(1.2); }
+        100% { transform: scale(1); opacity: 1; }
+      }
+      @keyframes pulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.6); }
+        70% { box-shadow: 0 0 0 12px rgba(245, 158, 11, 0); }
+      }
+
+      /* responsive tweaks */
+      @media (max-width:520px){
+        .card-header{ gap:8px }
+        .icon{ width:38px;height:38px; font-size:18px; }
+        .header-actions{ flex-wrap: wrap; }
+        .send-options {
+          grid-template-columns: 1fr;
+        }
+        .settings-tabs {
+          flex-direction: column;
+        }
+        .settings-tab {
+          width: 100%;
+          text-align: center;
+        }
+        .emergency-contact {
+          flex-direction: column;
+          align-items: stretch;
+          text-align: center;
+          max-width: 100%;
+        }
+        .emergency-contact .call-btn {
+          width: 100%;
+          justify-content: center;
+        }
+        .btn {
+          min-width: 100%;
+        }
+        .edit-modal-btn {
+          min-width: 100%;
+        }
+        .confirm-btn {
+          min-width: 100%;
+        }
+        .delete-all-btn {
+          min-width: 100%;
+        }
+        .form-row {
+          flex-direction: column;
+        }
+        .form-input {
+          min-width: 100%;
+        }
+        .category-item {
+          flex-direction: column;
+          text-align: center;
+        }
+        .category-actions {
+          width: 100%;
+          justify-content: center;
+        }
+        .setting-item {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .setting-control {
+          width: 100%;
+          justify-content: space-between;
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 10px;
+        }
+        body {
+          padding: 10px;
+        }
+        .header {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        #searchBox {
+          width: 100%;
+        }
+        .header-actions {
+          justify-content: center;
+        }
+        .emergency-contact {
+          max-width: 100%;
+        }
+        .daily-message {
+          flex-direction: column;
+          text-align: center;
+          gap: 8px;
+        }
+        .daily-text {
+          text-align: center;
+        }
+      }
+    </style>  
+  </head>
+
+  <body>    
+    <div class="container">    
+      <!-- پیام روزانه -->
+      <div class="daily-message" id="dailyMessage" style="display: none;">
+        <div class="daily-icon" id="dailyIcon">🌅</div>
+        <div class="daily-text" id="dailyText">درود! امروز روز خوبی برای شماست. 🌟</div>
+        <button class="daily-close" id="dailyClose" aria-label="بستن پیام">✕</button>
+      </div>
+
+      <div class="header" role="search">    
+        <input id="searchBox" type="text" placeholder="جستجو در دسته‌ها و موارد..." aria-label="جستجو" />    
+        <div class="header-actions" aria-hidden="false">    
+          <button id="quickAlarmBtn" class="quick-alarm-btn" title="آلارم فوری">🚨 آلارم</button>
+          <button id="exportPdfBtn" class="icon-btn" title="پرینت">🖨️</button>    
+          <button id="settingsBtn" class="icon-btn" title="تنظیمات">⚙️</button>    
+        </div>    
+      </div>    
+      <div class="grid" id="grid"></div>    
+      <textarea id="otherNotes" placeholder="توضیحات بیشتر..." aria-label="توضیحات بیشتر"></textarea>    
+      <div id="emergencyContactsContainer" style="display: none;">
+        <div style="font-weight: 700; margin-top: 18px; margin-bottom: 8px; color: #dc2626;">📞 شماره‌های اضطراری</div>
+        <div class="emergency-contacts" id="emergencyContacts"></div>
+      </div>    
+      <div class="controls">    
+        <button id="clearBtn" class="btn clear-btn">پاک کردن همه انتخاب‌ها</button>    
+        <button id="previewBtn" class="btn btn-ghost">پیش‌نمایش</button>    
+        <button id="sendBtn" class="btn btn-primary">ارسال درخواست</button>    
+      </div>    
+    </div>  
+
+    <!-- مودال تایید پاک کردن -->
+    <div class="confirm-modal" id="confirmModal">
+      <div class="confirm-card">
+        <div class="confirm-icon">🗑️</div>
+        <div class="confirm-title">پاک کردن همه انتخاب‌ها</div>
+        <div class="confirm-message">آیا مطمئن هستید که می‌خواهید تمام موارد انتخاب شده را پاک کنید؟</div>
+        <div class="confirm-buttons">
+          <button class="confirm-btn cancel" id="cancelClear">انصراف</button>
+          <button class="confirm-btn confirm" id="confirmClear">بله، پاک کن</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- مودال حذف همه داده‌ها -->
+    <div class="delete-all-modal" id="deleteAllModal">
+      <div class="delete-all-card">
+        <div class="delete-all-icon">⚠️</div>
+        <div class="delete-all-title">حذف همه داده‌های ذخیره شده</div>
+        <div class="delete-all-message">این عمل تمام اطلاعات ذخیره‌شده شما را برای همیشه پاک می‌کند.</div>
+        
+        <div class="delete-all-warning">
+          ⚠️ هشدار: این عمل غیرقابل بازگشت است!<br>
+          • همه موارد انتخاب‌شده پاک می‌شوند<br>
+          • همه شماره‌های اضطراری حذف می‌شوند<br>
+          • همه دسته‌های شخصی‌سازی شده از بین می‌روند<br>
+          • همه تنظیمات به پیش‌فرض برمی‌گردند
+        </div>
+        
+        <div class="delete-all-buttons">
+          <button class="delete-all-btn cancel" id="cancelDeleteAll">
+            <span>❌</span>
+            <span>انصراف</span>
+          </button>
+          <button class="delete-all-btn confirm" id="confirmDeleteAll">
+            <span>🔥</span>
+            <span>حذف همه داده‌ها</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- مودال پیش‌نمایش زیبا -->  
+    <div class="modal" id="modalPreview" aria-hidden="true" role="dialog" aria-modal="true">    
+      <div class="modal-card" role="document">    
+        <h3 style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">📋 پیش‌نمایش موارد انتخاب شده</h3>    
+        <div class="preview-container" id="selectedList"></div>    
+        <button id="closeModal" class="modal-close-btn">بازگشت</button>
+      </div>    
+    </div>  
+
+    <!-- مودال ارسال زیبا -->  
+    <div class="modal" id="modalSend" aria-hidden="true" role="dialog" aria-modal="true">    
+      <div class="modal-card" role="document">    
+        <h3 style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">📤 ارسال درخواست</h3>    
+        <div style="font-size:14px;color:var(--muted);margin-bottom:16px">لطفا روش ارسال را انتخاب کنید:</div>    
+        
+        <div class="send-options">
+          <div class="send-option whatsapp" id="sendWaOption">
+            <div class="icon">📱</div>
+            <div class="title">واتساپ</div>
+            <div class="desc">ارسال از طریق واتساپ</div>
+          </div>
+          <div class="send-option sms" id="sendSmsOption">
+            <div class="icon">💬</div>
+            <div class="title">پیامک</div>
+            <div class="desc">ارسال از طریق پیامک</div>
+          </div>
+          <!-- گزینه جدید برای کپی پیام -->
+          <div class="send-option copy" id="copyMessageOption">
+            <div class="icon">📋</div>
+            <div class="title">کپی پیام</div>
+            <div class="desc">کپی برای ارسال در هر برنامه</div>
+          </div>
+        </div>
+        
+        <button id="cancelSend" class="modal-close-btn">انصراف</button>
+      </div>    
+    </div>  
+
+    <!-- مودال تنظیمات -->  
+    <div class="modal" id="modalSettings" aria-hidden="true" role="dialog" aria-modal="true">    
+      <div class="modal-card" role="document">    
+        <h3 style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">⚙️ تنظیمات پیشرفته</h3>    
+        
+        <div class="settings-tabs">
+          <button class="settings-tab active" data-tab="general">🏠 عمومی</button>
+          <button class="settings-tab" data-tab="categories">📁 دسته‌بندی‌ها</button>
+          <button class="settings-tab" data-tab="emergency">🚨 اضطراری</button>
+          <button class="settings-tab" data-tab="alarm">🔊 آلارم</button>
+          <button class="settings-tab" data-tab="appearance">🎨 ظاهر</button>
+          <button class="settings-tab" data-tab="data">🗃️ مدیریت داده</button>
+        </div>
+        
+        <!-- تب عمومی -->
+        <div class="settings-tab-content active" id="tab-general">
+          <div class="settings-section">
+            <h4>🏠 تنظیمات عمومی</h4>
+            <div class="settings-group">
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">نمایش تعداد موارد انتخاب شده</div>
+                  <div class="setting-desc">نمایش badge روی هر دسته</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="showBadgesToggle" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">نمایش پیام روزانه</div>
+                  <div class="setting-desc">نمایش پیام روزانه در بالای صفحه</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="showDailyMessageToggle" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">جستجوی سریع</div>
+                  <div class="setting-desc">فعال‌سازی جستجوی فوری</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="quickSearchToggle" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- تب دسته‌بندی‌ها -->
+        <div class="settings-tab-content" id="tab-categories">
+          <div class="settings-section">
+            <h4>📁 مدیریت دسته‌بندی‌ها</h4>
+            <div class="category-list" id="customCategoriesList"></div>
+            <button id="addCategoryBtn" class="action-btn edit-btn" style="width: 100%; padding: 12px; margin-top: 8px;">➕ افزودن دسته جدید</button>
+          </div>
+          
+          <div class="settings-section">
+            <h4>⚡ تنظیمات دسته‌ها</h4>
+            <div class="settings-group">
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">بازنشانی دسته‌ها</div>
+                  <div class="setting-desc">بازگردانی دسته‌ها به حالت پیش‌فرض</div>
+                </div>
+                <button id="restoreDefaultBtn" class="action-btn edit-btn">بازنشانی</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- تب شماره‌های اضطراری -->
+        <div class="settings-tab-content" id="tab-emergency">
+          <div class="settings-section">
+            <h4>📞 مدیریت شماره‌های اضطراری</h4>
+            <div class="emergency-form" id="emergencyForm">
+              <div class="form-row">
+                <input type="text" id="emergencyName" class="form-input" placeholder="نام مخاطب (اختیاری)">
+                <input type="tel" id="emergencyNumber" class="form-input" placeholder="شماره تلفن">
+              </div>
+              <div class="form-actions">
+                <button id="cancelEmergencyBtn" class="action-btn delete-btn">لغو</button>
+                <button id="saveEmergencyBtn" class="action-btn edit-btn" style="background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white;">ذخیره شماره</button>
+              </div>
+            </div>
+            
+            <div class="category-list" id="emergencyNumbersList"></div>
+          </div>
+          
+          <div class="settings-section">
+            <h4>⚙️ تنظیمات نمایش</h4>
+            <div class="settings-group">
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">نمایش در صفحه اصلی</div>
+                  <div class="setting-desc">نمایش شماره‌ها در صفحه اصلی برای تماس سریع</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="showEmergencyOnMainToggle" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">مرتب‌سازی خودکار</div>
+                  <div class="setting-desc">مرتب کردن شماره‌ها بر اساس نام</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="autoEmergencySortToggle">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- تب آلارم -->
+        <div class="settings-tab-content" id="tab-alarm">
+          <div class="settings-section">
+            <h4>🔊 تنظیمات آلارم فوری</h4>
+            <div class="settings-group">
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">صدای آلارم</div>
+                  <div class="setting-desc">پخش صدای بوق هنگام کلیک روی دکمه آلارم</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="alarmSoundToggle" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">لرزش دستگاه</div>
+                  <div class="setting-desc">لرزش هنگام فعال شدن آلارم</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="alarmVibrationToggle" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">تکرار سریع آلارم</div>
+                  <div class="setting-desc">آلارم با سرعت بیشتر تکرار شود</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="fastAlarmToggle" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">تست آلارم</div>
+                  <div class="setting-desc">برای تست آلارم اینجا کلیک کنید</div>
+                </div>
+                <button id="testAlarmBtn" class="action-btn edit-btn" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; width: 100%;">
+                  🚨 تست آلارم
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- تب ظاهر برنامه -->
+        <div class="settings-tab-content" id="tab-appearance">
+          <div class="settings-section">
+            <h4>🎨 تنظیمات نمایش</h4>
+            <div class="settings-group">
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">حالت تاریک</div>
+                  <div class="setting-desc">برای استفاده در محیط‌های کم نور</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">کنتراست بالا</div>
+                  <div class="setting-desc">مناسب برای افراد با مشکلات بینایی</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="highContrastToggle">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">اندازه فونت بزرگ</div>
+                  <div class="setting-desc">افزایش سایز متن برای خوانایی بهتر</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="largeFontToggle">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- تب مدیریت داده -->
+        <div class="settings-tab-content" id="tab-data">
+          <div class="settings-section">
+            <h4>🗃️ مدیریت داده‌های برنامه</h4>
+            <div class="settings-group">
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">حذف همه داده‌های ذخیره شده</div>
+                  <div class="setting-desc">پاک کردن تمام اطلاعات ذخیره‌شده در مرورگر</div>
+                </div>
+                <button id="deleteAllDataBtn" class="action-btn delete-btn" style="padding: 12px 20px; font-size: 14px;">
+                  <span>🔥</span>
+                  <span>حذف همه داده‌ها</span>
+                </button>
+              </div>
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">بازیابی تنظیمات پیش‌فرض</div>
+                  <div class="setting-desc">بازگردانی همه تنظیمات به حالت اولیه</div>
+                </div>
+                <button id="resetSettingsBtn" class="action-btn edit-btn" style="padding: 12px 20px; font-size: 14px;">
+                  <span>🔄</span>
+                  <span>بازیابی تنظیمات</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="settings-section">
+            <h4>📊 وضعیت ذخیره‌سازی</h4>
+            <div class="settings-group">
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">موارد انتخاب شده</div>
+                  <div class="setting-desc" id="selectedItemsCount">0 مورد</div>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">شماره‌های اضطراری</div>
+                  <div class="setting-desc" id="emergencyContactsCount">0 شماره</div>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-label">
+                  <div class="setting-title">دسته‌های شخصی‌سازی</div>
+                  <div class="setting-desc" id="customCategoriesCount">0 دسته</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <button id="closeSettings" class="modal-close-btn">بستن</button>
+      </div>    
+    </div>  
+
+    <!-- مودال ویرایش دسته -->
+    <div class="edit-modal" id="editCategoryModal">
+      <div class="edit-modal-content">
+        <div class="edit-modal-title" id="editCategoryTitle">افزودن دسته جدید</div>
+        <div class="edit-form">
+          <div class="form-group">
+            <label class="form-label">نام دسته:</label>
+            <input type="text" id="editCategoryName" class="form-input-large" placeholder="مثال: ضروری">
+          </div>
+          <div class="form-group">
+            <label class="form-label">آیکون (یک ایموجی):</label>
+            <input type="text" id="editCategoryIcon" class="form-input-large" placeholder="مثال: 💧">
+          </div>
+          <div class="form-group">
+            <label class="form-label">موارد (با ویرگول جدا کنید):</label>
+            <textarea id="editCategoryItems" class="form-input-large" rows="4" placeholder="مثال: آب, غذا, دارو, کمک فوری"></textarea>
+          </div>
+        </div>
+        <div class="edit-modal-buttons">
+          <button class="edit-modal-btn cancel" id="cancelEditCategory">
+            <span>✖</span>
+            <span>انصراف</span>
+          </button>
+          <button class="edit-modal-btn save" id="saveEditCategory">
+            <span>💾</span>
+            <span>ذخیره</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toasts -->  
+    <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>  
+
+    <script>    
+      /* ---------- داده اولیه ---------- */    
+      const DEFAULT_DATA = [    
+        { id:"ess", icon:"💧", title:"ضروری", items:[
+          "آب آشامیدنی", "غذای گرم", "داروهای ضروری", "کمپ فوری", "پوشک بزرگسال", 
+          "لباس تمیز", "پتو", "کیسه خواب", "میوه تازه", "لباس گرم", "جوراب اضافه",
+          "دستمال کاغذی", "صابون", "خمیردندان", "مسواک", "شانه"
+        ] },    
+        { id:"mob", icon:"🦽", title:"تحرک", items:[
+          "ویلچر دستی", "ویلچر برقی", "واکر", "عصا", "رمپ قابل حمل", 
+          "حرکت به حیاط", "حرکت به پارک", "تمرین حرکت", "تمرین تعادل", "فیزیوتراپی",
+          "کمک برای بلند شدن", "نشستن روی صندلی", "ایستادن از تخت", "پیاده‌روی کوتاه"
+        ] },    
+        { id:"hyg", icon:"🛁", title:"بهداشت", items:[
+          "شست‌وشو کامل", "تعویض پوشک", "تعویض پانسمان", "کمک حمام", "مسواک زدن", 
+          "شانه زدن مو", "اصلاح", "ناخن‌گیری", "شستن دست", "استحمام نشسته",
+          "تعویض ملحفه", "لباس زیر تمیز", "کرم پوست", "لوسیون بدن", "ضد تعریق"
+        ] },    
+        { id:"med", icon:"🩺", title:"پزشکی", items:[
+          "ویزیت پزشک", "تزریق", "فیزیوتراپی", "تست فشار خون", "دارورسانی", 
+          "معاینات منظم", "مشاوره پزشکی", "بررسی دمای بدن", "کنترل قند خون",
+          "انجام آزمایش", "مراقبت از زخم", "تعویض پانسمان", "مشاوره تغذیه"
+        ] },    
+        { id:"nut", icon:"🍽️", title:"تغذیه", items:[
+          "نوشیدنی گرم", "میوه تازه", "سوپ مقوی", "چای", "قهوه", "شیر", 
+          "آبمیوه طبیعی", "غذای سبک", "پروتئین", "وعده‌های کوچک", "مکمل غذایی",
+          "سالاد", "نان تازه", "پنیر", "ماست", "عسل", "مغزها"
+        ] },    
+        { id:"sleep", icon:"🛏️", title:"خواب", items:[
+          "تخت مناسب", "تشک طبی", "بالش ارتوپدیک", "استراحت بیشتر", "نور کم", 
+          "پرده مناسب", "ملحفه تمیز", "پتو نرم", "دمای مناسب اتاق", "سکوت",
+          "بالش اضافه", "روشنایی شب", "آرامش قبل خواب", "موسیقی آرام"
+        ] },    
+        { id:"tech", icon:"📱", title:"فناوری", items:[
+          "کنترل صوتی", "تبلت", "نرم‌افزار دسترسی", "تماس تصویری", "پیام‌رسانی", 
+          "هدست صوتی", "اپلیکیشن آموزشی", "گجت کمکی", "شارژر", "هدفون",
+          "اسپیکر بلوتوث", "کنترل از راه دور", "دکمه بزرگ", "صفحه‌کلید ویژه"
+        ] },    
+        { id:"soc", icon:"🤝", title:"اجتماعی", items:[
+          "همراهی برای صحبت", "دوستی", "گفتگوی صمیمی", "گفتگو آنلاین", "فعالیت گروهی", 
+          "شرکت در رویداد", "تماس تلفنی", "ملاقات با خانواده", "دعوت دوستان",
+          "بازی گروهی", "مطالعه همراه", "پیاده‌روی با همراه", "گفتگو درباره اخبار"
+        ] },    
+        { id:"fun", icon:"🎭", title:"سرگرمی", items:[
+          "موسیقی آرام", "فیلم مورد علاقه", "کتاب صوتی", "بازی ساده", "رفتن به پارک", 
+          "نقاشی", "معما", "پازل", "سرگرمی خلاق", "گل‌کاری", "نگاه به آلبوم عکس",
+          "تماشای پرندگان", "گوش دادن به رادیو", "بازی‌های فکری"
+        ] },    
+        { id:"sport", icon:"🏃‍♂️", title:"ورزش", items:[
+          "پیاده‌روی سبک", "تمرین کششی", "یوگا", "تمرین قدرتی", "تمرین تعادل", 
+          "حرکات نشسته", "تمرین تنفس", "حرکات دست", "پیاده‌روی با واکر",
+          "تمرینات فیزیوتراپی", "حرکات گردن", "تمرینات کف لگن"
+        ] },
+        { id:"daily", icon:"📅", title:"روزمره", items:[
+          "خرید روزانه", "پرداخت قبوض", "مراجعه به بانک", "تعمیرات خانه", "تمیزکاری",
+          "نظافت اتاق", "شستن ظروف", "آبیاری گلدان‌ها", "غذا پختن", "لباس شستن",
+          "اتو کشیدن", "خرید دارو", "مراجعه به اداره", "برنامه‌ریزی روزانه"
+        ] },
+        { id:"care", icon:"❤️", title:"مراقبت", items:[
+          "کمک به مصرف دارو", "یادآوری زمان دارو", "کنترل علائم حیاتی", "مراقبت از پوست",
+          "ماساژ درمانی", "کمپرس گرم یا سرد", "استفاده از دستگاه اکسیژن", "تهویه اتاق",
+          "تعویض پوزیشن", "پیشگیری از زخم بستر", "مراقبت از دهان و دندان"
+        ] }
+      ];    
+
+      /* ---------- پیام‌های روزانه (200 پیام) ---------- */
+      const DAILY_MESSAGES = [
+        { icon: "🌱", text: "امروز فرصتی دوباره برای رشد و تعالی است. هر قدم کوچک، مسیر بزرگی را می‌سازد." },
+        { icon: "🧠", text: "ذهن خود را با افکار مثبت تغذیه کنید. همان‌گونه می‌اندیشید، همان‌گونه زندگی می‌کنید." },
+        { icon: "💪", text: "قدرت درونی تو از هر مانعی قوی‌تر است. به خودت ایمان داشته باش." },
+        { icon: "🌟", text: "هرکس ستاره منحصربه‌فرد خود را دارد. فقط باید آسمان وجود خویش را ببینی." },
+        { icon: "🕰️", text: "زمان با ارزش‌ترین دارایی توست. امروز را چون گوهری ناب بدرخش." },
+        { icon: "📚", text: "دانش، تنها گنجی است که با بخشیدن افزایش می‌یابد. امروز چیز جدیدی بیاموز." },
+        { icon: "🧩", text: "زندگی پازلی است که خودت باید آن را کامل کنی. هر تکه در جای خود زیباست." },
+        { icon: "🌄", text: "طلوع هر روز، وعده‌ای جدید از سوی هستی است. این هدیه را قدر بدان." },
+        { icon: "🧘", text: "در سکوت، پاسخ‌های درون را می‌یابی. امروز زمانی برای خودت بگذار." },
+        { icon: "🦋", text: "دگرگونی، قانون طبیعت است. همانند پروانه، به زیبایی تغییر کن." },
+        { icon: "🧭", text: "جهت زندگی را خودت تعیین می‌کنی. قطب‌نما درونت را دنبال کن." },
+        { icon: "🌳", text: "ریشه‌های عمیق، درختان استوار می‌سازند. امروز بر بنیان‌های خود بیفزا." },
+        { icon: "🎯", text: "هدف، مقصد نیست؛ مسیری است که تو را رشد می‌دهد." },
+        { icon: "💎", text: "تو الماس خامی هستی که در کوره تجربیات صیقل می‌یابی." },
+        { icon: "🌊", text: "مانند امواج دریا، گاه آرام و گاه پرخروش باش. هر حالتت زیباست." },
+        { icon: "🌻", text: "همچون آفتاب‌گردان، همیشه به سوی نور بچرخ. روشنایی درون توست." },
+        { icon: "🎨", text: "زندگی بوم نقاشی توست. رنگ‌هایش را خودت انتخاب کن." },
+        { icon: "🎶", text: "هر روز آهنگی جدید از زندگی است. با تمام وجود بخوان." },
+        { icon: "📖", text: "هر روز صفحه جدیدی از کتاب زندگی توست. آن را با عشق بنویس." },
+        { icon: "🏔️", text: "بلندترین قله‌ها با کوچکترین قدم‌ها فتح می‌شوند." },
+        { icon: "🌌", text: "همچون ستاره‌ها، حتی در تاریک‌ترین شب‌ها نیز بدرخش." },
+        { icon: "🕊️", text: "صلح درون، بزرگترین دستاورد زندگی است. آن را حفظ کن." },
+        { icon: "🎁", text: "هر روز هدیه‌ای است. کاغذهای آن را با احترام باز کن." },
+        { icon: "🧵", text: "زندگی نخ‌های رنگی است که تو از آن فرشی زیبا می‌بافی." },
+        { icon: "🪶", text: "سبک‌بار باش. تنها آنچه را که واقعاً نیاز داری، نگه دار." },
+        { icon: "🪞", text: "در آینه وجود خویش، زیباترین چهره را ببین." },
+        { icon: "🕯️", text: "نور کوچک تو می‌تواند تاریکی بزرگ را از بین ببرد." },
+        { icon: "🌺", text: "همچون گل، در هر فصلی به گونه‌ای خاص و زیبا باش." },
+        { icon: "🧭", text: "مسیر زندگی پر از پیچ و خم است. مسیریاب درونت را فراموش نکن." },
+        { icon: "🎭", text: "زندگی نمایشی است که تو نویسنده و بازیگر اصلی آن هستی." },
+        { icon: "🛤️", text: "راه هزاران مایلی با اولین قدم آغاز می‌شود." },
+        { icon: "🌅", text: "طلوع جدید، فرصت جدید. امروز را متفاوت شروع کن." },
+        { icon: "🪨", text: "سخت‌ترین سنگ‌ها نیز با قطره‌های مداوم آب سوراخ می‌شوند." },
+        { icon: "🎪", text: "زندگی سیرکی است که تو رئیس آن هستی. بهترین نمایش را اجرا کن." },
+        { icon: "🕸️", text: "همچون تار عنکبوت، با ظرافت و استحکام شبکه زندگی خود را بباف." },
+        { icon: "🌉", text: "پل‌ها را بساز، دیوارها را خراب کن. ارتباط زندگی‌بخش است." },
+        { icon: "🎲", text: "زندگی پر از شانس و انتخاب است. با آگاهی تاس بینداز." },
+        { icon: "🪐", text: "تو جهانی کوچک در جهانی بزرگ هستی. هر دو را قدر بدان." },
+        { icon: "🛡️", text: "در برابر طوفان‌های زندگی، سپر آرامش درونت را فراموش نکن." },
+        { icon: "🎡", text: "زندان چرخ و فلک است. گاهی بالا و گاهی پایین. از سفر لذت ببر." },
+        { icon: "🪶", text: "اندیشه‌هایت را همچون پرنده‌ای آزاد کن تا بر فراز قله‌ها پرواز کنند." },
+        { icon: "🧬", text: "تو میراث‌دار هزاران نسل هستی. این میراث را گرامی بدار." },
+        { icon: "🔮", text: "آیینه جادویی زندگی، تصویر افکار تو را نشان می‌دهد." },
+        { icon: "🪢", text: "گره‌های زندگی با صبر و حوصله باز می‌شوند." },
+        { icon: "🌠", text: "امشب به ستاره‌ها نگاه کن. هر کدام پیامی برای تو دارند." },
+        { icon: "🪵", text: "همچون درخت، ریشه‌هایت را محکم کن تا در طوفان‌ها نلرزی." },
+        { icon: "🎪", text: "سیرک زندگی ادامه دارد. حتی اگر افتادی، دوباره بلند شو." },
+        { icon: "🕰️", text: "ساعت زندگیت را با لحظه‌های ارزشمند کوک کن." },
+        { icon: "🌍", text: "تو ساکن این سیاره زیبایی. در حفظ زیبایی‌اش بکوش." },
+        { icon: "🎭", text: "ماسک‌ها را بردار. با چهره واقعی خودت زندگی کن." },
+        { icon: "🪶", text: "سبکی بال پرنده‌ای باش که بر فراز مشکلات پرواز می‌کند." },
+        { icon: "🧩", text: "هر قطعه پازل زندگی تو، بخشی از تصویر زیبای وجود توست." },
+        { icon: "🌉", text: "پل امید را بر روی رودخانه ناامیدی بساز." },
+        { icon: "🎁", text: "امروز هدیه‌ای به خودت بده: لبخند." },
+        { icon: "🪞", text: "در آینه قلب خود بنگر. آنچه می‌بینی، زیباترین تصویر است." },
+        { icon: "🌌", text: "کهکشان درونت از ستاره‌های امید و آرزو تشکیل شده است." },
+        { icon: "🪨", text: "سنگ‌لاخ زندگی را با کفش‌های استقامت بپیمای." },
+        { icon: "🎨", text: "زندگی ات را با رنگ‌های شادی و عشق رنگ‌آمیزی کن." },
+        { icon: "🪶", text: "پرهای خاطرات خوب را جمع کن و از آن بالی بساز." },
+        { icon: "🌊", text: "موج مشکلات زودگذر است. ساحل آرامش همیشه منتظر توست." },
+        { icon: "🎭", text: "در نمایش زندگی، بهترین نقش را برای خودت انتخاب کن." },
+        { icon: "🪐", text: "تو سیاره منحصربه‌فرد منظومه وجودی خودت هستی." },
+        { icon: "🌳", text: "همچون درخت کهنسال، خردت را با گذر زمان افزایش ده." },
+        { icon: "🎪", text: "چرخ زندگی همیشه در حرکت است. سوارش شو و لذت ببر." },
+        { icon: "🪶", text: "همچون پر قو، با وقار و زیبایی در آب‌های زندگی شناور باش." },
+        { icon: "🧭", text: "قطب‌نمای قلب تو، همیشه مسیر درست را نشان می‌دهد." },
+        { icon: "🎁", text: "هر شکست، هدیه‌ای در لفافه است. آن را با دقت باز کن." },
+        { icon: "🪞", text: "در آینه صبح، چهره فرصت‌های جدید را ببین." },
+        { icon: "🌌", text: "شب‌های تاریک زندگی، ستاره‌های درونت را درخشان‌تر می‌کنند." },
+        { icon: "🪨", text: "بر روی سنگ‌های تجربه، بنای محکم خرد خود را بنا کن." },
+        { icon: "🎨", text: "تخیل تو قلم مویی است که می‌تواند هر رویایی را نقاشی کند." },
+        { icon: "🪶", text: "سبک‌بالی، هنر زندگی کردن در لحظه حال است." },
+        { icon: "🌊", text: "دریای وجود تو از امواج احساسات تشکیل شده است. بر آنها سوار شو." },
+        { icon: "🎭", text: "زندگی صحنه تئاتری است که تو کارگردان آن هستی." },
+        { icon: "🪐", text: "گرانش عشق، همه چیز را در زندگی تو در کنار هم نگه می‌دارد." },
+        { icon: "🌳", text: "همچون درخت بید، در طوفان‌های زندگی انعطاف نشان ده." },
+        { icon: "🎪", text: "شعبده‌باز زندگی خودت باش. مشکلات را به فرصت تبدیل کن." },
+        { icon: "🪶", text: "پرنده روح تو می‌تواند تا بی‌نهایت پرواز کند. بال‌هایت را باز کن." },
+        { icon: "🧭", text: "قطب‌نمای درونت هیچگاه دروغ نمی‌گوید. به آن اعتماد کن." },
+        { icon: "🎁", text: "هر روز صبح، هدیه ۲۴ ساعت جدید را با شکرگزاری باز کن." },
+        { icon: "🪞", text: "در آینه چشم‌های دیگران، انعکاس مهربانی خودت را ببین." },
+        { icon: "🌌", text: "کهکشان درونت از نور ستاره‌های امید روشن می‌شود." },
+        { icon: "🪨", text: "سنگ بنای زندگی خود را بر شالوده راستی و درستی بگذار." },
+        { icon: "🎨", text: "زندگی بوم سفیدی است که تو هنرمند آن هستی." },
+        { icon: "🪶", text: "همچون پر پروانه، با ظرافت و زیبایی در باغ زندگی پرواز کن." },
+        { icon: "🌊", text: "هر موجی که به ساحل زندگی تو می‌خورد، گوهری به جا می‌گذارد." },
+        { icon: "🎭", text: "در نمایش زندگی، برای همه بازیگران احترام قائل شو." },
+        { icon: "🪐", text: "تو مرکز کهکشان وجودی خودت هستی. همه چیز به دور تو می‌چرخد." },
+        { icon: "🌳", text: "ریشه‌هایت را به عمق خاک معرفت فرو ببر." },
+        { icon: "🎪", text: "سیرک زندگی پر از شگفتی است. با چشمانی باز تماشا کن." },
+        { icon: "🪶", text: "پرهای افکار منفی را از بال‌هایت بتکان و سبک‌بال پرواز کن." },
+        { icon: "🧭", text: "قطب‌نمای عشق، همیشه شمال حقیقی را نشان می‌دهد." },
+        { icon: "🎁", text: "امروز بهترین روز زندگی توست. آن را به بهترین شکل استفاده کن." },
+        { icon: "🪞", text: "در آینه شب، ستاره‌های آرزوهایت را ببین." },
+        { icon: "🌌", text: "فضای درونت از کهکشان‌های امکان‌های بی‌پایان تشکیل شده است." },
+        { icon: "🪨", text: "بر روی سنگ قبر ترس‌هایت، باغ امید بکار." },
+        { icon: "🎨", text: "زندگی تابلویی است که هر روز بر روی آن رنگ جدیدی می‌زنی." },
+        { icon: "🪶", text: "همچون پر عقاب، با دیدی وسیع بر فراز کوه‌های زندگی پرواز کن." },
+        { icon: "🌊", text: "اقیانوس وجود تو از قطره‌های تجربه تشکیل شده است." },
+        { icon: "🎭", text: "در نمایش زندگی، برای همه حضار احترام قائل شو." },
+        { icon: "🪐", text: "تو تنها ساکن سیاره وجود خودت هستی. آن را زیبا نگه دار." },
+        { icon: "🌳", text: "همچون درخت سیب، میوه‌های دانش خود را با دیگران تقسیم کن." },
+        { icon: "🎪", text: "تراپز زندگی گاهی ترسناک به نظر می‌رسد، اما پرواز لذت‌بخش است." },
+        { icon: "🪶", text: "پرهای خاطرات، بال‌های پرواز تو به سوی آینده هستند." },
+        { icon: "🧭", text: "قطب‌نمای وجودت هرگز از کار نمی‌افتد. به آن اعتماد کن." },
+        { icon: "🎁", text: "امروز را چون گنجی نایاب ببین و از هر لحظه آن لذت ببر." },
+        { icon: "🪞", text: "در آینه آب‌های آرام، صلح درونت را ببین." },
+        { icon: "🌌", text: "شهاب‌سارهای فرصت‌ها هر شب در آسمان زندگی تو می‌درخشند." },
+        { icon: "🪨", text: "سنگ‌های گذشته را پلکی کن برای عبور به آینده." },
+        { icon: "🎨", text: "زندگی مخلوطی از رنگ‌های روشن و تیره است. هنرمندانه ترکیب‌شان کن." },
+        { icon: "🪶", text: "همچون پر قناری، با آوازی دلنشین ترانه زندگی را بخوان." },
+        { icon: "🌊", text: "هر موجی که می‌شکند، نویدی از موج جدیدی است که می‌آید." },
+        { icon: "🎭", text: "در نمایش زندگی، برای همه صندلی‌های خالی دلتنگ مشو." },
+        { icon: "🪐", text: "گرانش عشق، همه اجرام زندگی تو را در مدار درست نگه می‌دارد." },
+        { icon: "🌳", text: "همچون بونسای، در کوچکترین فضا نیز می‌توانی رشد کنی." },
+        { icon: "🎪", text: "دلقک زندگی خودت باش و دیگران را بخندان." },
+        { icon: "🪶", text: "پرهای تجربه، بال‌های پرواز تو به بلندای موفقیت هستند." },
+        { icon: "🧭", text: "قطب‌نمای درونت حتی در تاریک‌ترین شب‌ها نیز راه را نشان می‌دهد." },
+        { icon: "🎁", text: "هر روز صبح، هدیه بیداری را با شکرگزاری باز کن." },
+        { icon: "🪞", text: "در آینه دیگران، بهترین نسخه خودت را ببین." },
+        { icon: "🌌", text: "کهکشان درونت از نواخترهای شگفتی تشکیل شده است." },
+        { icon: "🪨", text: "سنگ آسیاب زندگی، دانه‌های تجربه تو را به آرد خرد تبدیل می‌کند." },
+        { icon: "🎨", text: "زندگی تابلوی نقاشی است که هر روز بخش جدیدی از آن را کامل می‌کنی." },
+        { icon: "🪶", text: "همچون پر طاووس، با زیبایی منحصربه‌فرد خودت زندگی کن." },
+        { icon: "🌊", text: "دریای وجود تو هیچگاه خشک نمی‌شود. همیشه منبعی زلال در آن جاری است." },
+        { icon: "🎭", text: "در نمایش زندگی، گاهی نقش اصلی و گاهی نقش مکمل را بازی کن." },
+        { icon: "🪐", text: "تو خورشید منظومه وجودی خودت هستی. نور بده و گرما ببخش." },
+        { icon: "🌳", text: "همچون درخت بید مجنون، با ظرافت و لطافت در باد زندگی برقص." },
+        { icon: "🎪", text: "سیرک زندگی پر از حیوانات آموزش‌دیده است. به آنها اعتماد کن." },
+        { icon: "🪶", text: "پرهای ایمان، قوی‌ترین بال‌های پرواز در آسمان زندگی هستند." },
+        { icon: "🧭", text: "قطب‌نمای دل تو، همیشه به سمت حقیقت می‌چرخد." },
+        { icon: "🎁", text: "امروز را چون الماسی نایاب در گنجینه خاطراتت نگه دار." },
+        { icon: "🪞", text: "در آینه وجودت، کودک درون را ببین و با او بازی کن." },
+        { icon: "🌌", text: "شب‌های تنهایی، بهترین فرصت برای دیدن ستاره‌های درونت هستند." },
+        { icon: "🪨", text: "سنگ قبر اشتباهات گذشته را به سنگ بنای آینده تبدیل کن." },
+        { icon: "🎨", text: "زندگی پالت رنگی است که تو هنرمندانه از آن استفاده می‌کنی." },
+        { icon: "🪶", text: "همچون پر هدهد، پیام‌آور خوبی‌ها باش." },
+        { icon: "🌊", text: "هر موج زندگی در ساحل وجود تو ردی از خود به جا می‌گذارد." },
+        { icon: "🎭", text: "در نمایش زندگی، گاهی باید خارج از نقش معمول خودت بازی کنی." },
+        { icon: "🪐", text: "تو ماه منظومه وجود خودت هستی. نور خورشید عشق را بازتاب بده." },
+        { icon: "🌳", text: "همچون درخت کاج، در سردترین زمستان‌ها نیز سبز بمان." },
+        { icon: "🎪", text: "تراپز زندگی نیاز به تمرین دارد. هر روز تمرین کن." },
+        { icon: "🪶", text: "پرهای امید، سبک‌ترین و قوی‌ترین بال‌های پرواز هستند." },
+        { icon: "🧭", text: "قطب‌نمای خرد تو، همیشه شمال حقیقی را نشان می‌دهد." },
+        { icon: "🎁", text: "هر روز هدیه‌ای جدید از زندگی است. آن را با دقت باز کن." },
+        /* اضافه کردن 50 پیام جدید */
+        { icon: "🌈", text: "پس از هر باران، رنگین‌کمانی در انتظار است. منتظر زیبایی‌ها باش." },
+        { icon: "🎼", text: "زندگی سمفونی دلنشینی است که تو رهبر ارکستر آن هستی." },
+        { icon: "🪔", text: "چراغ وجودت را همیشه روشن نگه دار، راهنمای دیگران باش." },
+        { icon: "🌹", text: "همچون گل رز، با زیبایی و خارهایت کامل باش." },
+        { icon: "🦉", text: "خردمندی در سکوت و تأمل نهفته است. گوش دادن را بیاموز." },
+        { icon: "🌀", text: "گردباد تغییرات را بپذیر، تو مرکز آرامش طوفان هستی." },
+        { icon: "🎪", text: "زندگی نمایشی است که هیچ تکرار نخواهد شد. از هر لحظه لذت ببر." },
+        { icon: "🪐", text: "تو کهکشان کوچکی هستی که جهان در تو نهفته است." },
+        { icon: "🌠", text: "به ستاره‌های آرزوهایت چشم بدوز، آن‌ها راهنمای مسیرت هستند." },
+        { icon: "🕯️", text: "نور کوچک تو می‌تواند تاریکی بزرگی را روشن کند." },
+        { icon: "🌊", text: "همچون اقیانوس، عمیق باش و اسرار زیادی در خود پنهان کن." },
+        { icon: "🌳", text: "ریشه‌هایت را محکم کن تا شاخه‌هایت تا آسمان بالا روند." },
+        { icon: "🎭", text: "در نمایش زندگی، بهترین بازیگر خودت باش." },
+        { icon: "🧭", text: "قطب‌نمای درونت راه درست را نشان می‌دهد. به آن اعتماد کن." },
+        { icon: "🎨", text: "زندگی بوم نقاشی توست، با رنگ‌های دلخواهت آن را زیبا کن." },
+        { icon: "🎶", text: "آهنگ زندگی خودت را بساز و با تمام وجود آن را بنواز." },
+        { icon: "🪶", text: "سبک‌بار باش، تنها آنچه را که برای پرواز نیاز داری نگه دار." },
+        { icon: "🌅", text: "هر طلوع، نویدی از فرصتی تازه است. آن را دریاب." },
+        { icon: "🌌", text: "در تاریکی شب، ستاره‌های وجودت درخشان‌تر می‌درخشند." },
+        { icon: "🪨", text: "همچون کوه، استوار و مقاوم در برابر طوفان‌ها بایست." },
+        { icon: "🌉", text: "پل ارتباط را محکم بساز تا دیگران بتوانند از آن عبور کنند." },
+        { icon: "🎡", text: "زندگی چرخ و فلکی از احساسات است، از هر چرخش لذت ببر." },
+        { icon: "🕸️", text: "با ظرافت و استحکام شبکه روابطت را بباف." },
+        { icon: "🎲", text: "شانس در زندگی وجود دارد، اما انتخاب‌های تو سرنوشت‌سازند." },
+        { icon: "🛡️", text: "در برابر سختی‌ها، سپر صبر و استقامت داشته باش." },
+        { icon: "🎁", text: "هر روز هدیه‌ای گرانبهاست، کاغذهای آن را با دقت باز کن." },
+        { icon: "🪞", text: "در آینه وجودت، زیباترین چهره ممکن را ببین." },
+        { icon: "🧩", text: "هر قطعه از زندگی تو، بخشی از پازل زیبای هستی است." },
+        { icon: "🌠", text: "آرزوهایت را به ستاره‌ها بسپار، آن‌ها برآورده خواهند شد." },
+        { icon: "🕊️", text: "صلح درون، آرامشی بی‌پایان به ارمغان می‌آورد." },
+        { icon: "🌺", text: "همچون گل، در هر فصلی به گونه‌ای خاص و زیبا شکوفا شو." },
+        { icon: "🎪", text: "زندگی سیرک شگفتی‌هاست، از هر لحظه آن لذت ببر." },
+        { icon: "🪐", text: "تو سیاره منحصربه‌فردی در کهکشان وجودی خود هستی." },
+        { icon: "🌊", text: "موج احساساتت را مهار کن و بر اقیانوس زندگی سوار شو." },
+        { icon: "🌳", text: "همچون درخت کهنسال، حکمتت با گذر زمان افزایش یابد." },
+        { icon: "🎭", text: "در نمایش زندگی، برای همه نقش‌ها ارزش قائل شو." },
+        { icon: "🧭", text: "جهت زندگی را خودت انتخاب کن و با قاطعیت پیش برو." },
+        { icon: "🎨", text: "تخیلت را رها کن تا دنیا را به رنگ‌های دلخواهت درآورد." },
+        { icon: "🎶", text: "زندگی نُتی است که تو باید آن را با عشق بنوازی." },
+        { icon: "🪶", text: "پرهای تجربه، بال‌های پرواز تو به سوی آینده هستند." },
+        { icon: "🌅", text: "هر صبح، فرصتی نو برای آغاز دوباره است." },
+        { icon: "🌌", text: "در دل تاریکی، نور درونت راه را نشان می‌دهد." },
+        { icon: "🪨", text: "بر سنگ بنای تجربیاتت، عمارت خرد بساز." },
+        { icon: "🌉", text: "پل امید را بر روی رود ناامیدی بنا کن." },
+        { icon: "🎡", text: "از بالا و پایین‌های زندگی نترس، همه بخشی از سفر هستند." },
+        { icon: "🕸️", text: "روابطت را با دقت بباف، هر تار مهم است." },
+        { icon: "🎲", text: "زندگی بازی شانس نیست، بازی انتخاب است." },
+        { icon: "🛡️", text: "در برابر چالش‌ها، زره استقامت به تن کن." },
+        { icon: "🎁", text: "امروز را چون گوهری ناب ببین و از آن محافظت کن." },
+        { icon: "🪞", text: "در آینه دیگران، انعکاس خودت را ببین و بهبود ببخش." }
+      ];
+
+      const POLITE_MESSAGES = [
+        "با سلام و احترام، امیدوارم حال شما خوب باشد. لطفا موارد زیر را برایم فراهم کنید:",
+        "درود بر شما، اگر امکان دارد این نیازها را برآورده سازید:",
+        "با عرض ادب و احترام، خواهشمندم در تهیه موارد زیر مساعدت فرمایید:",
+        "سلام و وقت بخیر، ممنون می‌شوم اگر در مورد موارد زیر کمک کنید:",
+        "با احترام، با سپاس از لطف شما، موارد زیر را نیاز دارم:",
+      ];
+
+      /* ---------- متغیرهای گلوبال ---------- */
+      let shownMessagesHistory = [];
+      let dailyMessageQueue = [...DAILY_MESSAGES];
+
+      /* ---------- المان‌ها ---------- */
+      const grid = document.getElementById("grid");
+      const searchBox = document.getElementById("searchBox");
+      const notes = document.getElementById("otherNotes");
+      const modalPreview = document.getElementById("modalPreview");
+      const selectedList = document.getElementById("selectedList");
+      const modalSend = document.getElementById("modalSend");
+      const toastWrap = document.getElementById("toastWrap");
+      const settingsBtn = document.getElementById("settingsBtn");
+      const modalSettings = document.getElementById("modalSettings");
+      const exportPdfBtn = document.getElementById("exportPdfBtn");
+      const closeModal = document.getElementById("closeModal");
+      const closeSettings = document.getElementById("closeSettings");
+      const customCategoriesList = document.getElementById("customCategoriesList");
+      const addCategoryBtn = document.getElementById("addCategoryBtn");
+      const restoreDefaultBtn = document.getElementById("restoreDefaultBtn");
+      const emergencyContacts = document.getElementById("emergencyContacts");
+      const emergencyContactsContainer = document.getElementById("emergencyContactsContainer");
+      const emergencyNumbersList = document.getElementById("emergencyNumbersList");
+      const emergencyForm = document.getElementById("emergencyForm");
+      const emergencyName = document.getElementById("emergencyName");
+      const emergencyNumber = document.getElementById("emergencyNumber");
+      const saveEmergencyBtn = document.getElementById("saveEmergencyBtn");
+      const cancelEmergencyBtn = document.getElementById("cancelEmergencyBtn");
+      const sendWaOption = document.getElementById("sendWaOption");
+      const sendSmsOption = document.getElementById("sendSmsOption");
+      const copyMessageOption = document.getElementById("copyMessageOption");
+      const cancelSend = document.getElementById("cancelSend");
+      const quickAlarmBtn = document.getElementById("quickAlarmBtn");
+      const editCategoryModal = document.getElementById("editCategoryModal");
+      const editCategoryTitle = document.getElementById("editCategoryTitle");
+      const editCategoryName = document.getElementById("editCategoryName");
+      const editCategoryIcon = document.getElementById("editCategoryIcon");
+      const editCategoryItems = document.getElementById("editCategoryItems");
+      const cancelEditCategory = document.getElementById("cancelEditCategory");
+      const saveEditCategory = document.getElementById("saveEditCategory");
+      const dailyMessage = document.getElementById("dailyMessage");
+      const dailyIcon = document.getElementById("dailyIcon");
+      const dailyText = document.getElementById("dailyText");
+      const dailyClose = document.getElementById("dailyClose");
+      const testAlarmBtn = document.getElementById("testAlarmBtn");
+      const sendBtn = document.getElementById("sendBtn");
+      const previewBtn = document.getElementById("previewBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const confirmModal = document.getElementById("confirmModal");
+      const cancelClear = document.getElementById("cancelClear");
+      const confirmClear = document.getElementById("confirmClear");
+      const deleteAllModal = document.getElementById("deleteAllModal");
+      const cancelDeleteAll = document.getElementById("cancelDeleteAll");
+      const confirmDeleteAll = document.getElementById("confirmDeleteAll");
+      const deleteAllDataBtn = document.getElementById("deleteAllDataBtn");
+      const resetSettingsBtn = document.getElementById("resetSettingsBtn");
+      const selectedItemsCount = document.getElementById("selectedItemsCount");
+      const emergencyContactsCount = document.getElementById("emergencyContactsCount");
+      const customCategoriesCount = document.getElementById("customCategoriesCount");
+
+      /* ---------- وضعیت محلی ---------- */
+      let checkedSet = new Set();
+      let emergencyContactsData = [];
+      let customCategoriesData = [];
+      let currentEditingEmergency = null;
+      let editingCategoryType = null;
+      let editingCategoryIndex = null;
+      let alarmInterval = null;
+      let isAlarmActive = false;
+      let modifiedDefaultData = [...DEFAULT_DATA];
+      let dailyMessageTimer = null;
+
+      /* ---------- تنظیمات ---------- */
+      const DEFAULT_SETTINGS = {
+        showBadges: true,
+        showEmergencyOnMain: true,
+        autoEmergencySort: false,
+        darkMode: false,
+        highContrast: false,
+        largeFont: false,
+        alarmSound: true,
+        alarmVibration: true,
+        fastAlarm: true,
+        quickSearch: true,
+        showDailyMessage: true
+      };
+      
+      let settings = {...DEFAULT_SETTINGS};
+
+      /* ---------- کمک کننده‌ها ---------- */
+      function idFor(catId,itemText){ return `${catId}::${itemText}`; }
+
+      function saveState(){
+        try {
+          localStorage.setItem("needs_checked", JSON.stringify(Array.from(checkedSet)));
+          localStorage.setItem("needs_notes", notes.value || "");
+          localStorage.setItem("needs_emergency_contacts", JSON.stringify(emergencyContactsData));
+          localStorage.setItem("needs_custom_categories", JSON.stringify(customCategoriesData));
+          localStorage.setItem("needs_modified_default_data", JSON.stringify(modifiedDefaultData));
+          localStorage.setItem("needs_settings", JSON.stringify(settings));
+          localStorage.setItem("needs_daily_messages_history", JSON.stringify(shownMessagesHistory));
+          updateDataStats();
+        } catch (e) {
+          console.error("Error saving state:", e);
+        }
+      }
+
+      function loadState(){
+        try {
+          // بارگذاری با try-catch برای هر آیتم
+          try{
+            const a = JSON.parse(localStorage.getItem("needs_checked") || "[]");
+            checkedSet = new Set(a);
+          }catch(e){ 
+            console.log("خطا در بارگذاری موارد انتخاب شده", e);
+            checkedSet = new Set();
+          }
+          
+          notes.value = localStorage.getItem("needs_notes") || "";
+          
+          try{ 
+            emergencyContactsData = JSON.parse(localStorage.getItem("needs_emergency_contacts") || "[]"); 
+          }catch(e){ 
+            console.log("خطا در بارگذاری شماره‌های اضطراری", e);
+            emergencyContactsData = [];
+          }
+          
+          try{ 
+            customCategoriesData = JSON.parse(localStorage.getItem("needs_custom_categories") || "[]"); 
+          }catch(e){ 
+            console.log("خطا در بارگذاری دسته‌های شخصی", e);
+            customCategoriesData = [];
+          }
+          
+          try{
+            const savedModifiedData = JSON.parse(localStorage.getItem("needs_modified_default_data") || "null");
+            if(savedModifiedData){
+              modifiedDefaultData = savedModifiedData;
+            }
+          }catch(e){
+            console.log("خطا در بارگذاری داده‌های پیش‌فرض", e);
+            modifiedDefaultData = [...DEFAULT_DATA];
+          }
+          
+          try{
+            const savedSettings = JSON.parse(localStorage.getItem("needs_settings") || "{}");
+            // ترکیب تنظیمات پیش‌فرض با تنظیمات ذخیره شده
+            settings = {...DEFAULT_SETTINGS, ...savedSettings};
+          }catch(e){
+            console.log("خطا در بارگذاری تنظیمات", e);
+            settings = {...DEFAULT_SETTINGS};
+          }
+          
+          try{
+            shownMessagesHistory = JSON.parse(localStorage.getItem("needs_daily_messages_history") || "[]");
+          }catch(e){ 
+            console.log("خطا در بارگذاری تاریخچه پیام", e);
+            shownMessagesHistory = [];
+          }
+          
+          // تنظیم مجدد صف پیام‌ها
+          resetDailyMessageQueue();
+          
+          updateUIFromSettings();
+          renderEmergencyContacts();
+          setupDailyMessage();
+          updateDataStats();
+          
+        } catch (error) {
+          console.error("خطای کلی در بارگذاری حالت:", error);
+          // ریست کامل به پیش‌فرض
+          checkedSet = new Set();
+          emergencyContactsData = [];
+          customCategoriesData = [];
+          modifiedDefaultData = [...DEFAULT_DATA];
+          settings = {...DEFAULT_SETTINGS};
+          shownMessagesHistory = [];
+          notes.value = "";
+          
+          try {
+            localStorage.clear();
+          } catch (e) {}
+          
+          updateUIFromSettings();
+          setupDailyMessage();
+          updateDataStats();
+          toast("داده‌های خراب پاک شدند، برنامه ریست شد");
+        }
+      }
+
+      // تابع جدید: تنظیم مجدد صف پیام‌ها
+      function resetDailyMessageQueue() {
+        // فقط پیام‌هایی که نمایش داده نشده‌اند در صف بمانند
+        dailyMessageQueue = DAILY_MESSAGES.filter(msg => !shownMessagesHistory.includes(msg.text));
+        
+        // اگر همه پیام‌ها نمایش داده شده‌اند، تاریخچه را پاک کن
+        if (dailyMessageQueue.length === 0) {
+          shownMessagesHistory = [];
+          dailyMessageQueue = [...DAILY_MESSAGES];
+        }
+      }
+
+      function updateUIFromSettings(){
+        document.getElementById('showBadgesToggle').checked = settings.showBadges;
+        document.getElementById('showEmergencyOnMainToggle').checked = settings.showEmergencyOnMain;
+        document.getElementById('autoEmergencySortToggle').checked = settings.autoEmergencySort;
+        document.getElementById('darkModeToggle').checked = settings.darkMode;
+        document.getElementById('highContrastToggle').checked = settings.highContrast;
+        document.getElementById('largeFontToggle').checked = settings.largeFont;
+        document.getElementById('alarmSoundToggle').checked = settings.alarmSound;
+        document.getElementById('alarmVibrationToggle').checked = settings.alarmVibration;
+        document.getElementById('fastAlarmToggle').checked = settings.fastAlarm;
+        document.getElementById('quickSearchToggle').checked = settings.quickSearch;
+        document.getElementById('showDailyMessageToggle').checked = settings.showDailyMessage;
+        
+        applySettings();
+      }
+
+      function applySettings(){
+        document.body.classList.toggle('dark', settings.darkMode);
+        document.body.classList.toggle('high-contrast', settings.highContrast);
+        document.body.classList.toggle('large-text', settings.largeFont);
+        
+        if(settings.showEmergencyOnMain && emergencyContactsData.length > 0){
+          emergencyContactsContainer.style.display = 'block';
+        } else {
+          emergencyContactsContainer.style.display = 'none';
+        }
+        
+        // نمایش پیام روزانه
+        setupDailyMessage();
+        
+        renderGrid();
+        renderEmergencyContacts();
+        updateDataStats();
+      }
+
+      function setupDailyMessage() {
+        // اگر نمایش پیام غیرفعال است، پیام را مخفی کن
+        if (!settings.showDailyMessage) {
+          dailyMessage.style.display = 'none';
+          return;
+        }
+        
+        // اگر هیچ پیامی در صف نیست، صف را دوباره پر کن
+        if (dailyMessageQueue.length === 0) {
+          shownMessagesHistory = [];
+          dailyMessageQueue = [...DAILY_MESSAGES];
+        }
+        
+        // انتخاب پیام تصادفی
+        const randomIndex = Math.floor(Math.random() * dailyMessageQueue.length);
+        const randomMessage = dailyMessageQueue[randomIndex];
+        
+        // به تاریخچه اضافه کن
+        shownMessagesHistory.push(randomMessage.text);
+        
+        // از صف حذف کن
+        dailyMessageQueue.splice(randomIndex, 1);
+        
+        // نمایش پیام
+        dailyIcon.textContent = randomMessage.icon;
+        dailyText.textContent = randomMessage.text;
+        
+        dailyMessage.style.display = 'flex';
+        dailyMessage.style.opacity = '1';
+        dailyMessage.style.transform = 'translateY(0)';
+        dailyMessage.classList.remove('hiding');
+        
+        // تایمر قبلی را پاک کن
+        if (dailyMessageTimer) {
+          clearTimeout(dailyMessageTimer);
+        }
+        
+        // بعد از 15 ثانیه پیام محو شود
+        dailyMessageTimer = setTimeout(() => {
+          hideDailyMessage();
+        }, 15000);
+        
+        // ذخیره تاریخچه
+        saveState();
+      }
+
+      function hideDailyMessage() {
+        dailyMessage.classList.add('hiding');
+        setTimeout(() => {
+          dailyMessage.style.display = 'none';
+          dailyMessage.classList.remove('hiding');
+        }, 400);
+      }
+
+      function toast(text, timeout=2500){
+        const t = document.createElement("div"); 
+        t.className="toast"; 
+        t.textContent=text;
+        toastWrap.appendChild(t);
+        setTimeout(()=>{ 
+          t.style.opacity="0"; 
+          t.style.transform="translateX(-100%)"; 
+          setTimeout(()=>t.remove(),300) 
+        }, timeout);
+      }
+
+      function updateDataStats() {
+        selectedItemsCount.textContent = `${checkedSet.size} مورد`;
+        emergencyContactsCount.textContent = `${emergencyContactsData.length} شماره`;
+        customCategoriesCount.textContent = `${customCategoriesData.length} دسته`;
+      }
+
+      /* ---------- رندر کارت‌ها ---------- */
+      function createCard(cat){
+        const card = document.createElement("div"); 
+        card.className="card"; 
+        card.dataset.cat=cat.id;
+        
+        const header = document.createElement("div"); 
+        header.className="card-header";
+        
+        const icon = document.createElement("div"); 
+        icon.className="icon"; 
+        icon.textContent = cat.icon;
+        
+        const titleWrap = document.createElement("div"); 
+        titleWrap.className="card-meta";
+        
+        const title = document.createElement("div"); 
+        title.className="card-title"; 
+        title.textContent = cat.title;
+        title.style.flex = "1";
+        
+        if(settings.showBadges){
+          const badge = document.createElement("div"); 
+          badge.className="badge"; 
+          badge.textContent = "0";
+          titleWrap.appendChild(title);
+          titleWrap.appendChild(badge);
+        } else {
+          titleWrap.appendChild(title);
+        }
+        
+        const chev = document.createElement("div"); 
+        chev.className="chev"; 
+        chev.style.marginRight="6px"; 
+        chev.textContent="▾";
+
+        header.appendChild(icon);
+        header.appendChild(titleWrap);
+        header.appendChild(chev);
+
+        const items = document.createElement("div"); 
+        items.className="items";
+
+        cat.items.forEach(text=>{
+          const ident = idFor(cat.id,text);
+          const label = document.createElement("div"); 
+          label.className="item"; 
+          label.tabIndex=0; 
+          label.setAttribute("role","button");
+          
+          const cb = document.createElement("div"); 
+          cb.className="checkbox"; 
+          cb.setAttribute("role","checkbox"); 
+          cb.dataset.value = ident; 
+          cb.tabIndex=0;
+          cb.innerHTML = '<svg width="12" height="10" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 5.5L5 9L13 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
+          
+          const span = document.createElement("div"); 
+          span.className="item-label"; 
+          span.textContent = text;
+
+          label.appendChild(cb); 
+          label.appendChild(span);    
+
+          if(checkedSet.has(ident)) label.classList.add("checked");    
+
+          function toggleCheck(e){    
+            e && e.stopPropagation();    
+            const isChecked = label.classList.toggle("checked");    
+            if(isChecked) checkedSet.add(ident); 
+            else checkedSet.delete(ident);    
+            updateBadge(cat.id);    
+            saveState();
+          }    
+          cb.addEventListener("click", toggleCheck);    
+          cb.addEventListener("keydown", (e)=>{ 
+            if(e.key==="Enter" || e.key===" ") { 
+              e.preventDefault(); 
+              toggleCheck(); 
+            }
+          });    
+          label.addEventListener("click", (e)=>{ 
+            e.stopPropagation(); // جلوگیری از بسته شدن دسته
+            toggleCheck(e); 
+          });    
+          label.addEventListener("keydown", (e)=>{ 
+            if(e.key==="Enter") {
+              e.stopPropagation();
+              toggleCheck(e); 
+            }
+          });    
+
+          items.appendChild(label);
+        });
+
+        header.addEventListener("click", ()=>{
+          const open = items.classList.contains("open");
+          // فقط همین دسته را باز/بسته کن
+          items.classList.toggle("open");
+          chev.style.transform = open ? "rotate(0)" : "rotate(180deg)";
+        });
+
+        card.appendChild(header);
+        card.appendChild(items);
+
+        setTimeout(()=>updateBadge(cat.id),0);
+        return card;
+      }
+
+      function renderGrid(){
+        grid.innerHTML = "";
+        const allData = [...modifiedDefaultData, ...customCategoriesData];
+        allData.forEach(cat => grid.appendChild(createCard(cat)));
+        updateDataStats();
+      }
+
+      function updateBadge(catId){
+        if(!settings.showBadges) return;
+        const card = document.querySelector(`.card[data-cat="${catId}"]`);
+        if(!card) return;
+        const badge = card.querySelector(".badge");
+        if(badge){
+          const count = Array.from(checkedSet).filter(x=>x.startsWith(catId+"::")).length;
+          badge.textContent = count;
+        }
+      }
+
+      /* ---------- شماره‌های اضطراری ---------- */
+      function renderEmergencyContacts(){
+        emergencyContacts.innerHTML = "";
+        emergencyNumbersList.innerHTML = "";
+        
+        let contactsToShow = [...emergencyContactsData];
+        
+        if(settings.autoEmergencySort){
+          contactsToShow.sort((a,b) => (a.name || '').localeCompare(b.name || ''));
+        }
+        
+        contactsToShow.forEach((contact, idx)=>{
+          if(contact.number && contact.number.trim()){
+            const contactEl = document.createElement("div");
+            contactEl.className = "emergency-contact";
+            contactEl.innerHTML = `
+              <div style="flex: 1; min-width: 0;">
+                <div class="name">${contact.name || 'بدون نام'}</div>
+                <div class="number">${contact.number}</div>
+              </div>
+              <button class="call-btn" data-index="${idx}">
+                📞 تماس
+              </button>
+            `;
+            emergencyContacts.appendChild(contactEl);
+            
+            contactEl.querySelector('.call-btn').addEventListener('click', (e)=>{
+              e.stopPropagation();
+              window.open(`tel:${contact.number}`, '_self');
+            });
+          }
+        });
+        
+        contactsToShow.forEach((contact, idx)=>{
+          const contactItem = document.createElement("div");
+          contactItem.className = "category-item";
+          contactItem.innerHTML = `
+            <div class="category-icon">📞</div>
+            <div class="category-info">
+              <div class="category-name">${contact.name || 'بدون نام'}</div>
+              <div class="category-items">${contact.number}</div>
+            </div>
+            <div class="category-actions">
+              <button class="action-btn edit-btn edit-emergency-btn" data-index="${idx}">ویرایش</button>
+              <button class="action-btn delete-btn delete-emergency-btn" data-index="${idx}">حذف</button>
+            </div>
+          `;
+          emergencyNumbersList.appendChild(contactItem);
+        });
+        
+        document.querySelectorAll('.edit-emergency-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const idx = parseInt(e.target.dataset.index);
+            editEmergencyContact(idx);
+          });
+        });
+        
+        document.querySelectorAll('.delete-emergency-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const idx = parseInt(e.target.dataset.index);
+            if(confirm("آیا از حذف این شماره مطمئن هستید؟")){
+              emergencyContactsData.splice(idx, 1);
+              renderEmergencyContacts();
+              saveState();
+              toast("شماره حذف شد");
+            }
+          });
+        });
+        
+        updateDataStats();
+      }
+
+      function addEmergencyContact(name, number){
+        if(!number.trim()){
+          toast("لطفا شماره را وارد کنید");
+          return false;
+        }
+        
+        if(currentEditingEmergency !== null){
+          emergencyContactsData[currentEditingEmergency] = {name: name.trim(), number: number.trim()};
+          currentEditingEmergency = null;
+          toast("شماره ویرایش شد");
+        } else {
+          emergencyContactsData.push({name: name.trim(), number: number.trim()});
+          toast("شماره اضافه شد");
+        }
+        
+        emergencyName.value = '';
+        emergencyNumber.value = '';
+        saveEmergencyBtn.textContent = 'ذخیره شماره';
+        renderEmergencyContacts();
+        saveState();
+        return true;
+      }
+
+      function editEmergencyContact(idx){
+        const contact = emergencyContactsData[idx];
+        emergencyName.value = contact.name || '';
+        emergencyNumber.value = contact.number || '';
+        currentEditingEmergency = idx;
+        saveEmergencyBtn.textContent = 'ویرایش شماره';
+        emergencyForm.scrollIntoView({behavior: 'smooth'});
+      }
+
+      /* ---------- مدیریت دسته‌های شخصی‌سازی ---------- */
+      function renderCustomCategories(){
+        customCategoriesList.innerHTML = "";
+        
+        modifiedDefaultData.forEach((cat, idx) => {
+          const catItem = document.createElement("div");
+          catItem.className = "category-item";
+          catItem.innerHTML = `
+            <div class="category-icon">${cat.icon}</div>
+            <div class="category-info">
+              <div class="category-name">${cat.title}</div>
+              <div class="category-items">${cat.items.length} مورد</div>
+            </div>
+            <div class="category-actions">
+              <button class="action-btn edit-btn edit-category-btn" data-type="default" data-index="${idx}">ویرایش</button>
+              <button class="action-btn delete-btn delete-category-btn" data-type="default" data-index="${idx}">حذف</button>
+            </div>
+          `;
+          customCategoriesList.appendChild(catItem);
+        });
+        
+        customCategoriesData.forEach((cat, idx) => {
+          const catItem = document.createElement("div");
+          catItem.className = "category-item";
+          catItem.innerHTML = `
+            <div class="category-icon">${cat.icon}</div>
+            <div class="category-info">
+              <div class="category-name">${cat.title}</div>
+              <div class="category-items">${cat.items.length} مورد</div>
+            </div>
+            <div class="category-actions">
+              <button class="action-btn edit-btn edit-category-btn" data-type="custom" data-index="${idx}">ویرایش</button>
+              <button class="action-btn delete-btn delete-category-btn" data-type="custom" data-index="${idx}">حذف</button>
+            </div>
+          `;
+          customCategoriesList.appendChild(catItem);
+        });
+        
+        document.querySelectorAll('.edit-category-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const type = e.target.dataset.type;
+            const idx = parseInt(e.target.dataset.index);
+            showEditCategoryModal(type, idx, false);
+          });
+        });
+        
+        document.querySelectorAll('.delete-category-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const type = e.target.dataset.type;
+            const idx = parseInt(e.target.dataset.index);
+            
+            if(confirm(`آیا از حذف این دسته ${type === 'default' ? 'پیش‌فرض' : 'شخصی'} مطمئن هستید؟`)){
+              if(type === 'default'){
+                modifiedDefaultData.splice(idx, 1);
+              } else {
+                customCategoriesData.splice(idx, 1);
+              }
+              renderCustomCategories();
+              saveState();
+              renderGrid();
+              toast("دسته حذف شد");
+            }
+          });
+        });
+        
+        updateDataStats();
+      }
+
+      function showEditCategoryModal(type, index, isNew = false) {
+        let category;
+        
+        if (isNew) {
+          editCategoryTitle.textContent = "افزودن دسته جدید";
+          editCategoryName.value = "";
+          editCategoryIcon.value = "➕";
+          editCategoryItems.value = "آیتم جدید";
+        } else {
+          editCategoryTitle.textContent = type === 'default' ? "ویرایش دسته پیش‌فرض" : "ویرایش دسته شخصی";
+          
+          if (type === 'default') {
+            category = modifiedDefaultData[index];
+          } else {
+            category = customCategoriesData[index];
+          }
+          
+          editCategoryName.value = category.title;
+          editCategoryIcon.value = category.icon;
+          editCategoryItems.value = category.items.join("، ");
+        }
+        
+        editingCategoryType = type;
+        editingCategoryIndex = index;
+        
+        editCategoryModal.classList.add('active');
+      }
+
+      function hideEditCategoryModal() {
+        editCategoryModal.classList.remove('active');
+        editingCategoryType = null;
+        editingCategoryIndex = null;
+      }
+
+      function saveCategoryChanges(){
+        const name = editCategoryName.value.trim();
+        const icon = editCategoryIcon.value.trim();
+        const itemsText = editCategoryItems.value.trim();
+        
+        if(!name){
+          toast("لطفا نام دسته را وارد کنید");
+          return false;
+        }
+        
+        if(!icon){
+          toast("لطفا آیکون را وارد کنید");
+          return false;
+        }
+        
+        if(!itemsText){
+          toast("لطفا موارد دسته را وارد کنید");
+          return false;
+        }
+        
+        const items = itemsText.split(/[،,]/).map(i => i.trim()).filter(i => i);
+        
+        if(items.length === 0){
+          toast("لطفا حداقل یک مورد وارد کنید");
+          return false;
+        }
+        
+        const newCategory = {
+          id: editingCategoryType === 'default' ? modifiedDefaultData[editingCategoryIndex]?.id : `custom_${Date.now()}`,
+          icon: icon,
+          title: name,
+          items: items
+        };
+        
+        if(editingCategoryType === 'default'){
+          modifiedDefaultData[editingCategoryIndex] = newCategory;
+        } else {
+          customCategoriesData[editingCategoryIndex] = newCategory;
+        }
+        
+        renderCustomCategories();
+        saveState();
+        renderGrid();
+        hideEditCategoryModal();
+        toast("دسته ذخیره شد");
+        return true;
+      }
+
+      function addNewCategory(){
+        showEditCategoryModal('custom', customCategoriesData.length, true);
+      }
+
+      /* ---------- سرچ ---------- */
+      searchBox.addEventListener("input", ()=>{
+        if (!settings.quickSearch) return;
+        
+        const val = searchBox.value.trim().toLowerCase();
+        document.querySelectorAll(".card").forEach(card=>{
+          const title = card.querySelector(".card-title").innerText.toLowerCase();
+          const items = Array.from(card.querySelectorAll(".item-label")).map(t=>t.innerText.toLowerCase());
+          card.style.display = (title.includes(val) || items.some(x=>x.includes(val))) ? "" : "none";
+        });
+      });
+
+      /* ---------- پیش‌نمایش ---------- */
+      function gatherSelected(){
+        const selected = Array.from(checkedSet).map(id=>{
+          const [catId, text] = id.split("::");
+          const cat = modifiedDefaultData.find(c=>c.id===catId) || customCategoriesData.find(c=>c.id===catId);
+          return { id, cat: cat?cat.title:"", icon: cat?.icon || "", text };
+        });
+        const noteText = notes.value.trim();
+        return { selected, noteText };
+      }
+
+      previewBtn.addEventListener("click", ()=>{
+        openPreviewModal();
+      });
+
+      function openPreviewModal(){
+        const { selected, noteText } = gatherSelected();
+        selectedList.innerHTML = "";
+        
+        if(selected.length===0){
+          const empty = document.createElement("div");
+          empty.className = "preview-empty";
+          empty.innerHTML = `
+            <div class="preview-empty-icon">🤔</div>
+            <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">هیچ موردی انتخاب نشده است</div>
+            <div style="font-size: 14px; color: var(--muted);">لطفا از لیست بالا موارد مورد نیاز خود را انتخاب کنید</div>
+          `;
+          selectedList.appendChild(empty);
+        } else {
+          const grouped = selected.reduce((acc, curr)=>{
+            const key = `${curr.cat}::${curr.icon}`;
+            (acc[key] = acc[key] || []).push(curr.text);
+            return acc;
+          }, {});
+          
+          Object.keys(grouped).forEach(key=>{
+            const [catName, catIcon] = key.split("::");
+            
+            const categoryDiv = document.createElement("div");
+            categoryDiv.className = "preview-category";
+            categoryDiv.innerHTML = `
+              <div class="preview-category-title">
+                <div class="icon">${catIcon}</div>
+                <div>${catName}</div>
+              </div>
+              <div class="preview-items"></div>
+            `;
+            
+            const itemsDiv = categoryDiv.querySelector('.preview-items');
+            grouped[key].forEach(t=>{
+              const itemDiv = document.createElement("div");
+              itemDiv.className = "preview-item";
+              itemDiv.innerHTML = `
+                <div class="checkmark">✅</div>
+                <div>${t}</div>
+              `;
+              itemsDiv.appendChild(itemDiv);
+            });
+            
+            selectedList.appendChild(categoryDiv);
+          });
+        }
+        
+        if(noteText){
+          const notesDiv = document.createElement("div");
+          notesDiv.className = "preview-notes";
+          notesDiv.innerHTML = `
+            <div class="preview-notes-title">
+              <span>📝</span>
+              <span>توضیحات</span>
+            </div>
+            <div>${noteText}</div>
+          `;
+          selectedList.appendChild(notesDiv);
+        }
+        
+        modalPreview.setAttribute("aria-hidden","false");
+        modalPreview.style.display = "flex";
+      }
+
+      closeModal.addEventListener("click", ()=>{ 
+        modalPreview.setAttribute("aria-hidden","true"); 
+        modalPreview.style.display="none"; 
+      });
+
+      /* ---------- ارسال ---------- */
+      sendBtn.addEventListener("click", ()=>{ 
+        const { selected, noteText } = gatherSelected();
+        
+        if(selected.length === 0 && !noteText.trim()){
+          toast("لطفا حداقل یک مورد را انتخاب کنید یا توضیحی بنویسید");
+          return;
+        }
+        
+        modalSend.setAttribute("aria-hidden","false"); 
+        modalSend.style.display="flex"; 
+      });
+
+      cancelSend.addEventListener("click", ()=>{ 
+        modalSend.setAttribute("aria-hidden","true"); 
+        modalSend.style.display="none"; 
+      });
+
+      function preparePoliteMessage(){
+        const { selected, noteText } = gatherSelected();
+        const lines = [];
+        
+        const randomPoliteMessage = POLITE_MESSAGES[Math.floor(Math.random() * POLITE_MESSAGES.length)];
+        lines.push(randomPoliteMessage);
+        lines.push("");
+        
+        if(selected.length===0 && !noteText.trim()){
+          lines.push("• هنوز موردی انتخاب نکرده‌ام.");
+        } else {
+          const grouped = selected.reduce((acc, curr)=>{
+            (acc[curr.cat] = acc[curr.cat] || []).push(curr.text);
+            return acc;
+          }, {});
+          
+          if (selected.length > 0) {
+            Object.keys(grouped).forEach(cat=>{
+              lines.push(`📌 ${cat}:`);
+              grouped[cat].forEach(t=> lines.push(`   • ${t}`));
+              lines.push("");
+            });
+          }
+        }
+        
+        if(noteText.trim()){
+          lines.push("📝 توضیحات اضافی:");
+          lines.push(noteText);
+          lines.push("");
+        }
+        
+        lines.push("با تشکر از لطف و محبت شما 🙏");
+        lines.push("");
+        lines.push("🌹");
+        
+        return lines.join("\n");
+      }
+
+      sendWaOption.addEventListener("click", ()=>{
+        const msg = preparePoliteMessage();
+        const url = "https://wa.me/?text=" + encodeURIComponent(msg);
+        window.open(url, "_blank");
+        toast("پنجره واتساپ باز شد");
+        modalSend.setAttribute("aria-hidden","true"); 
+        modalSend.style.display="none";
+      });
+
+      sendSmsOption.addEventListener("click", ()=>{
+        const msg = preparePoliteMessage();
+        let url;
+        try{ 
+          url = "sms:?body=" + encodeURIComponent(msg); 
+          window.open(url, "_self"); 
+        }catch(e){ 
+          url = "sms:?body=" + encodeURIComponent(msg); 
+          window.open(url, "_blank"); 
+        }
+        toast("برنامه پیامک باز شد");
+        modalSend.setAttribute("aria-hidden","true"); 
+        modalSend.style.display="none";
+      });
+
+      copyMessageOption.addEventListener("click", ()=>{
+        const msg = preparePoliteMessage();
+        
+        // استفاده از Clipboard API
+        navigator.clipboard.writeText(msg)
+          .then(() => {
+            toast("✅ پیام در کلیپ‌بورد کپی شد!");
+            modalSend.setAttribute("aria-hidden","true"); 
+            modalSend.style.display="none";
+          })
+          .catch(err => {
+            // روش جایگزین برای مرورگرهای قدیمی
+            const textArea = document.createElement("textarea");
+            textArea.value = msg;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+              const successful = document.execCommand('copy');
+              if (successful) {
+                toast("✅ پیام در کلیپ‌بورد کپی شد!");
+              } else {
+                toast("⚠️ لطفا متن را دستی کپی کنید");
+              }
+            } catch (err) {
+              toast("⚠️ لطفا متن را دستی کپی کنید");
+            }
+            
+            document.body.removeChild(textArea);
+            modalSend.setAttribute("aria-hidden","true"); 
+            modalSend.style.display="none";
+          });
+      });
+
+      /* ---------- مودال تایید پاک کردن ---------- */
+      clearBtn.addEventListener("click", ()=>{
+        confirmModal.classList.add('active');
+      });
+
+      cancelClear.addEventListener("click", ()=>{
+        confirmModal.classList.remove('active');
+      });
+
+      confirmClear.addEventListener("click", ()=>{
+        checkedSet.clear();
+        notes.value = "";
+        document.querySelectorAll(".item.checked").forEach(it=>it.classList.remove("checked"));
+        Array.from(document.querySelectorAll(".badge")).forEach(b=>b.textContent="0");
+        saveState();
+        confirmModal.classList.remove('active');
+        toast("همه انتخاب‌ها پاک شد");
+      });
+
+      /* ---------- مودال حذف همه داده‌ها ---------- */
+      deleteAllDataBtn.addEventListener("click", () => {
+        deleteAllModal.classList.add('active');
+      });
+
+      cancelDeleteAll.addEventListener("click", () => {
+        deleteAllModal.classList.remove('active');
+      });
+
+      confirmDeleteAll.addEventListener("click", () => {
+        // پاک کردن همه داده‌ها
+        checkedSet.clear();
+        emergencyContactsData = [];
+        customCategoriesData = [];
+        modifiedDefaultData = [...DEFAULT_DATA];
+        settings = {...DEFAULT_SETTINGS};
+        shownMessagesHistory = [];
+        notes.value = "";
+        
+        // پاک کردن LocalStorage
+        try {
+          localStorage.clear();
+        } catch (e) {}
+        
+        // اعمال تغییرات
+        updateUIFromSettings();
+        renderGrid();
+        renderEmergencyContacts();
+        renderCustomCategories();
+        setupDailyMessage();
+        
+        // بستن مودال
+        deleteAllModal.classList.remove('active');
+        
+        // نمایش پیام
+        toast("✅ همه داده‌ها با موفقیت پاک شدند و برنامه ریست شد");
+      });
+
+      resetSettingsBtn.addEventListener("click", () => {
+        if(confirm("آیا می‌خواهید همه تنظیمات به حالت پیش‌فرض بازگردند؟")) {
+          settings = {...DEFAULT_SETTINGS};
+          updateUIFromSettings();
+          saveState();
+          toast("تنظیمات به حالت پیش‌فرض بازگردانده شدند");
+        }
+      });
+
+      /* ---------- تنظیمات آنی ---------- */
+      function updateSetting(settingName, value) {
+        settings[settingName] = value;
+        saveState();
+        applySettings();
+        toast("تنظیمات اعمال شد");
+      }
+
+      document.getElementById('showBadgesToggle').addEventListener('change', (e) => {
+        updateSetting('showBadges', e.target.checked);
+      });
+
+      document.getElementById('showEmergencyOnMainToggle').addEventListener('change', (e) => {
+        updateSetting('showEmergencyOnMain', e.target.checked);
+      });
+
+      document.getElementById('autoEmergencySortToggle').addEventListener('change', (e) => {
+        updateSetting('autoEmergencySort', e.target.checked);
+      });
+
+      document.getElementById('darkModeToggle').addEventListener('change', (e) => {
+        updateSetting('darkMode', e.target.checked);
+      });
+
+      document.getElementById('highContrastToggle').addEventListener('change', (e) => {
+        updateSetting('highContrast', e.target.checked);
+      });
+
+      document.getElementById('largeFontToggle').addEventListener('change', (e) => {
+        updateSetting('largeFont', e.target.checked);
+      });
+
+      document.getElementById('alarmSoundToggle').addEventListener('change', (e) => {
+        updateSetting('alarmSound', e.target.checked);
+      });
+
+      document.getElementById('alarmVibrationToggle').addEventListener('change', (e) => {
+        updateSetting('alarmVibration', e.target.checked);
+      });
+
+      document.getElementById('fastAlarmToggle').addEventListener('change', (e) => {
+        updateSetting('fastAlarm', e.target.checked);
+      });
+
+      document.getElementById('quickSearchToggle').addEventListener('change', (e) => {
+        updateSetting('quickSearch', e.target.checked);
+      });
+
+      document.getElementById('showDailyMessageToggle').addEventListener('change', (e) => {
+        updateSetting('showDailyMessage', e.target.checked);
+      });
+
+      closeSettings.addEventListener("click", ()=>{
+        modalSettings.setAttribute("aria-hidden", "true");
+        modalSettings.style.display = "none";
+      });
+
+      dailyClose.addEventListener("click", () => {
+        hideDailyMessage();
+      });
+
+      /* ---------- Export PDF ---------- */
+      exportPdfBtn.addEventListener("click", ()=>{ 
+        // نمایش مودال پیش‌نمایش برای پرینت
+        openPreviewModal();
+        
+        // تاخیر برای لود شدن کامل محتوا
+        setTimeout(() => {
+          window.print();
+          toast("آماده پرینت!");
+        }, 500);
+      });
+
+      notes.addEventListener("input", ()=>{ 
+        saveState();
+      });
+
+      /* ---------- تنظیمات (مودال) ---------- */
+      document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tabId = tab.dataset.tab;
+          document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.settings-tab-content').forEach(c => c.classList.remove('active'));
+          tab.classList.add('active');
+          document.getElementById(`tab-${tabId}`).classList.add('active');
+        });
+      });
+
+      settingsBtn.addEventListener("click", () => {
+        modalSettings.setAttribute("aria-hidden", "false");
+        modalSettings.style.display = "flex";
+        renderCustomCategories();
+        renderEmergencyContacts();
+        updateDataStats();
+      });
+
+      saveEmergencyBtn.addEventListener("click", () => {
+        addEmergencyContact(emergencyName.value, emergencyNumber.value);
+      });
+
+      cancelEmergencyBtn.addEventListener("click", () => {
+        emergencyName.value = '';
+        emergencyNumber.value = '';
+        currentEditingEmergency = null;
+        saveEmergencyBtn.textContent = 'ذخیره شماره';
+      });
+
+      emergencyNumber.addEventListener("keypress", (e) => {
+        if(e.key === 'Enter'){
+          addEmergencyContact(emergencyName.value, emergencyNumber.value);
+        }
+      });
+
+      addCategoryBtn.addEventListener("click", addNewCategory);
+
+      cancelEditCategory.addEventListener("click", hideEditCategoryModal);
+
+      saveEditCategory.addEventListener("click", saveCategoryChanges);
+
+      restoreDefaultBtn.addEventListener("click", () => {
+        if(confirm("آیا می‌خواهید دسته‌ها به حالت اولیه بازگردند؟ تغییرات فعلی از بین خواهد رفت.")){
+          modifiedDefaultData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+          renderCustomCategories();
+          saveState();
+          renderGrid();
+          toast("دسته‌ها بازنشانی شدند");
+        }
+      });
+
+      /* ---------- آلارم فوری ---------- */
+      function playAlarmSound() {
+        if (!settings.alarmSound) return;
+        
+        try {
+          // ایجاد صدا با Web Audio API
+          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.value = 800;
+          oscillator.type = 'sine';
+          
+          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+          
+          oscillator.start();
+          oscillator.stop(audioContext.currentTime + 0.5);
+          
+          setTimeout(() => {
+            oscillator.disconnect();
+            audioContext.close();
+          }, 500);
+        } catch (e) {
+          console.log("صدا پشتیبانی نمی‌شود");
+        }
+      }
+
+      function triggerVibration() {
+        if (!settings.alarmVibration) return;
+        
+        if (navigator.vibrate) {
+          try {
+            navigator.vibrate(200);
+          } catch (e) {
+            console.log("لرزش پشتیبانی نمی‌شود");
+          }
+        }
+      }
+
+      function toggleAlarm() {
+        if (isAlarmActive) {
+          // متوقف کردن آلارم
+          if (alarmInterval) {
+            clearInterval(alarmInterval);
+            alarmInterval = null;
+          }
+          quickAlarmBtn.classList.remove('active');
+          quickAlarmBtn.textContent = '🚨 آلارم';
+          isAlarmActive = false;
+          toast("آلارم متوقف شد");
+        } else {
+          // شروع آلارم
+          playAlarmSound();
+          triggerVibration();
+          
+          quickAlarmBtn.classList.add('active');
+          quickAlarmBtn.textContent = '⏹️ متوقف کردن';
+          isAlarmActive = true;
+          
+          const intervalTime = settings.fastAlarm ? 1000 : 2000;
+          alarmInterval = setInterval(() => {
+            playAlarmSound();
+            triggerVibration();
+          }, intervalTime);
+          
+          toast("آلارم فعال شد");
+        }
+      }
+
+      quickAlarmBtn.addEventListener('click', toggleAlarm);
+
+      testAlarmBtn.addEventListener('click', () => {
+        playAlarmSound();
+        triggerVibration();
+        toast("آلارم تست شد");
+      });
+
+      /* ---------- init ---------- */
+      function init(){
+        loadState();
+        renderGrid();
+        renderCustomCategories();
+        
+        setTimeout(() => {
+          toast("برنامه آماده است! 🌟", 2000);
+        }, 500);
+      }
+
+      init();
+
+      /* ---------- استایل پرینت ---------- */
+      (function addPrintStyles(){
+        const style = document.createElement("style");
+        style.textContent = `
+          @media print { 
+            body * { 
+              visibility: hidden !important; 
+            } 
+            .modal[aria-hidden="false"], 
+            .modal[aria-hidden="false"] * { 
+              visibility: visible !important; 
+            } 
+            .modal[aria-hidden="false"] { 
+              position: absolute !important; 
+              left: 0 !important; 
+              top: 0 !important; 
+              width: 100% !important; 
+              height: 100% !important; 
+              background: white !important; 
+              margin: 0 !important; 
+              padding: 20px !important; 
+              display: block !important; 
+            }
+            .modal-card { 
+              box-shadow: none !important; 
+              background: transparent !important; 
+              border-radius: 0 !important; 
+              padding: 0 !important; 
+              max-width: 100% !important; 
+              width: 100% !important; 
+            }
+            .preview-container { 
+              max-height: none !important; 
+              height: auto !important; 
+              overflow: visible !important; 
+            }
+            .preview-category { 
+              box-shadow: none !important; 
+              border: 1px solid #000 !important; 
+              page-break-inside: avoid !important; 
+              margin-bottom: 15px !important; 
+            }
+            .preview-item { 
+              border: 1px solid #ccc !important; 
+              page-break-inside: avoid !important; 
+            }
+            .modal-close-btn,
+            .icon-btn,
+            .btn,
+            .header,
+            .controls,
+            .emergency-contacts {
+              display: none !important;
+            }
+            h3 {
+              margin-bottom: 20px !important;
+              font-size: 24px !important;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+      })();
+    </script>  
+  </body>
+</html>
